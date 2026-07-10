@@ -190,7 +190,7 @@
       <div id="kanjiBackdrop" style="position: absolute; right: clamp(-40px, 2vw, 60px); top: 50%; transform: translateY(-54%); font-weight: 800; font-size: clamp(180px, 34vw, 420px); line-height: .9; color: rgba(215, 38, 61, .07); pointer-events: none; user-select: none;">拉面</div>
 
       <!-- lanterns -->
-      <div style="position: absolute; top: 0; left: clamp(4px, 1.2vw, 30px); pointer-events: none; z-index: 0; transform: scale(.62); transform-origin: top left;">
+      <div id="lanternL" style="position: absolute; top: 0; left: clamp(4px, 1.2vw, 30px); pointer-events: none; z-index: 0; transform: scale(.62); transform-origin: top left;">
         <div style="width: 3px; height: 44px; background: #2B1A12; margin: 0 auto;"></div>
         <div style="animation: bbSway 4.4s ease-in-out infinite; transform-origin: top center;">
           <div style="width: 30px; height: 9px; background: #2B1A12; border-radius: 3px; margin: 0 auto;"></div>
@@ -202,7 +202,7 @@
           <div style="width: 9px; height: 9px; background: #FFC72C; border: 2px solid #2B1A12; border-radius: 50%; margin: 0 auto;"></div>
         </div>
       </div>
-      <div style="position: absolute; top: 0; right: clamp(8px, 8vw, 150px); pointer-events: none; z-index: 0; transform: scale(.72); transform-origin: top center;">
+      <div id="lanternR" style="position: absolute; top: 0; right: clamp(8px, 8vw, 150px); pointer-events: none; z-index: 0; transform: scale(.72); transform-origin: top center;">
         <div style="width: 3px; height: 70px; background: #2B1A12; margin: 0 auto;"></div>
         <div style="animation: bbSway 5.1s ease-in-out infinite .8s; transform-origin: top center;">
           <div style="width: 30px; height: 9px; background: #2B1A12; border-radius: 3px; margin: 0 auto;"></div>
@@ -443,6 +443,19 @@
       </div>
 
       <div data-reveal-stagger="1" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: clamp(20px, 3vw, 32px);">
+        <!-- Sides — "Karaage" and "Gyoza" here are different dishes (and
+             prices) from the Rice Bowl items; the parentheticals keep them
+             from reading as duplicates. -->
+        <div class="menu-card" style="padding: clamp(20px, 3.5vw, 32px);">
+          <h3 style="margin: 0; font-family: 'Lilita One', cursive; font-weight: 400; font-size: clamp(24px, 3vw, 30px); color: #D7263D;">SIDES</h3>
+          <div style="font-weight: 800; font-size: 13px; letter-spacing: 2px; color: #4A362B; margin: 4px 0 18px;">GOLDEN <span style="color: #D7263D;">|</span> PERFECTLY SEASONED</div>
+          <div style="display: flex; flex-direction: column; gap: 12px; font-size: clamp(16px, 1.8vw, 18px); font-weight: 700;">
+            <div style="display: flex; align-items: baseline; gap: 8px;"><span>Karaage <span style="font-size: .82em; color: #7A6252;">(Japanese Chicken Popcorn)</span></span><span style="flex: 1; min-width: 28px; border-bottom: 3px dotted #C9B8A3;"></span><span style="font-family: 'Lilita One', cursive; color: #D7263D;">₱110</span></div>
+            <div style="display: flex; align-items: baseline; gap: 8px;"><span>Gyoza <span style="font-size: .82em; color: #7A6252;">(Pork &amp; Vegetable Dumpling)</span></span><span style="flex: 1; min-width: 28px; border-bottom: 3px dotted #C9B8A3;"></span><span style="font-family: 'Lilita One', cursive; color: #D7263D;">₱70</span></div>
+            <div style="display: flex; align-items: baseline; gap: 8px;"><span>Braised Pork</span><span style="flex: 1; border-bottom: 3px dotted #C9B8A3;"></span><span style="font-family: 'Lilita One', cursive; color: #D7263D;">₱70</span></div>
+            <div style="display: flex; align-items: baseline; gap: 8px;"><span>Kalamari</span><span style="flex: 1; border-bottom: 3px dotted #C9B8A3;"></span><span style="font-family: 'Lilita One', cursive; color: #D7263D;">₱120</span></div>
+          </div>
+        </div>
         <!-- Rice bowls -->
         <div class="menu-card" style="padding: clamp(20px, 3.5vw, 32px);">
           <h3 style="margin: 0; font-family: 'Lilita One', cursive; font-weight: 400; font-size: clamp(24px, 3vw, 30px); color: #D7263D;">RICE BOWLS</h3>
@@ -464,6 +477,18 @@
             <div style="display: flex; align-items: baseline; gap: 8px;"><span>Mango Cheesecake</span><span style="flex: 1; border-bottom: 3px dotted #C9B8A3;"></span><span style="font-family: 'Lilita One', cursive; color: #D7263D;">₱130</span></div>
             <div style="display: flex; align-items: baseline; gap: 8px;"><span>Cheesecake Snow Halo</span><span style="flex: 1; border-bottom: 3px dotted #C9B8A3;"></span><span style="font-family: 'Lilita One', cursive; color: #D7263D;">₱150</span></div>
           </div>
+        </div>
+      </div>
+
+      <!-- Drinks — compact one-line strip -->
+      <div data-reveal="1" class="menu-card" style="padding: clamp(16px, 2.5vw, 24px) clamp(20px, 3.5vw, 32px);">
+        <div style="display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px 32px; font-size: clamp(15px, 1.7vw, 17px); font-weight: 700;">
+          <h3 style="margin: 0; font-family: 'Lilita One', cursive; font-weight: 400; font-size: clamp(20px, 2.4vw, 24px); color: #D7263D;">DRINKS</h3>
+          <span style="white-space: nowrap;">Water <span style="font-family: 'Lilita One', cursive; color: #D7263D;">₱20</span></span>
+          <span style="white-space: nowrap;">Soda <span style="font-family: 'Lilita One', cursive; color: #D7263D;">₱30</span></span>
+          <span style="white-space: nowrap;">Dr. Pepper / A&amp;W <span style="font-family: 'Lilita One', cursive; color: #D7263D;">₱80</span></span>
+          <span style="white-space: nowrap;">San Mig Apple <span style="font-family: 'Lilita One', cursive; color: #D7263D;">₱60</span></span>
+          <span style="white-space: nowrap;">San Mig Light <span style="font-family: 'Lilita One', cursive; color: #D7263D;">₱65</span></span>
         </div>
       </div>
     </div>

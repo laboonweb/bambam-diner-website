@@ -139,6 +139,15 @@ a:hover { color: #96200F; }
 /* ---- Footer ---- */
 .footer-link { color: #E8D9C4; }
 .footer-link:hover { color: #FFC72C; }
+/* The fixed music player (bottom-right, z 90) parks over the footer's last
+   line at full scroll — the text can never scroll clear of it, so the footer
+   reserves the pill's band. !important beats the footer's inline padding.
+   96px = desktop pill 64 + 24 bottom offset + breathing room; phones get the
+   44px mini bar + 14px offset. */
+footer { padding-bottom: 96px !important; }
+@media (max-width: 760px) {
+  footer { padding-bottom: 72px !important; }
+}
 
 /* ---- Hero bowl: never wider than its grid column ---- */
 #bowlWrap { max-width: 100%; }
@@ -502,12 +511,18 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
 /* SE-class phones (short AND narrow): the enlarged lockup tier plus its
    ink-containing padding needs a little height back from the bowl */
 @media (max-width: 400px) and (max-height: 699px) {
-  #bowlWrap { max-height: min(25svh, 290px) !important; }
+  /* 23svh (was 25): pays for the 76px nav-clearing top padding on SE-class
+     heights — 25svh left the build bar ~10px below the fold at 375x667 */
+  #bowlWrap { max-height: min(23svh, 290px) !important; }
 }
 
 /* Tall phones have vertical headroom: restore readable body copy in the pinned hero
-   and give the caption pill / progress bar clear separation */
-@media (max-width: 760px) and (min-height: 700px) {
+   and give the caption pill / progress bar clear separation.
+   830px floor, not 700: at page load real phones report toolbar-reduced
+   heights (iPhone 12/13 ≈ 724, Pro Max ≈ 806) and this tier's roomier
+   sizing overflowed the pinned viewport there — those heights must stay on
+   the compact tier. ≥830 only occurs with browser chrome collapsed. */
+@media (max-width: 760px) and (min-height: 830px) {
   #heroPara { font-size: 16px !important; line-height: 1.5 !important; }
   #heroH1 { font-size: 18px !important; }
   #bowlWrap { max-height: min(32svh, 320px) !important; }
@@ -521,12 +536,38 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
   #heroPara { display: none !important; }
   #heroStatus { display: none !important; }
   #kanjiBackdrop { display: none !important; }
-  #heroGrid { padding-top: 52px !important; padding-bottom: 4px !important; gap: 6px !important; }
+  /* redundant with the caption pill and collides with it at this height */
+  #scrollHint { display: none !important; }
+  /* gap/bowl pay for the 76px nav-clearing top padding (rule below):
+     24svh + 6px gap overflowed the pin by ~20px at 667x375 */
+  #heroGrid { padding-top: 52px !important; padding-bottom: 4px !important; gap: 4px !important; }
   #top { gap: 4px !important; }
   #heroLogo { font-size: min(10vw, 9.5svh) !important; }
   #heroH1 { font-size: 14px !important; margin: 0 !important; }
   #heroCtas a { font-size: 12px !important; padding: 5px 10px !important; }
-  #bowlWrap { max-height: 24svh !important; }
+  #bowlWrap { max-height: 18svh !important; }
   #stageCaption { font-size: 12px !important; padding: 2px 10px !important; margin-top: 0 !important; }
   #buildBar { margin-top: 2px !important; }
+}
+
+/* The fixed nav measures 67px tall (44px hamburger touch target below 768px;
+   the Call-us pill and paddings land at the same height above it) — every
+   hero tier's top padding must clear it or the eyebrow slides under the
+   opaque bar. The max-height arm covers phone landscape, where the ≤460px
+   tier's 52px floor sat under the nav too. This sits LAST so it beats every
+   equal-importance tier above. Real-device Safari/Brave exposed this: their
+   toolbars shrink innerHeight until the grid rests at its padding floor;
+   taller emulated viewports center the content lower and hid the bug. */
+@media (max-width: 767px), (max-height: 460px) {
+  #heroGrid { padding-top: 76px !important; }
+}
+
+/* Lanterns: the desktop right offset (8vw) walks the lantern INTO the
+   centered eyebrow as the viewport narrows. On phones, corner-pin both at
+   half scale (they can't reach the ~262px centered eyebrow at any width
+   ≥350px) and drop them 26px so the lantern body swings below the 67px nav
+   bar instead of hiding behind it. */
+@media (max-width: 760px) {
+  #lanternL { left: 4px !important; transform: translateY(26px) scale(.5) !important; }
+  #lanternR { right: 6px !important; transform-origin: top right !important; transform: translateY(26px) scale(.5) !important; }
 }
