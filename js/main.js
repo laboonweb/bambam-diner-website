@@ -50,6 +50,7 @@
     s.onload = onload;
     s.onerror = onerror;
     document.head.appendChild(s);
+    return s;
   }
 
   function threeFailed() {
@@ -95,10 +96,35 @@
   function load3D() {
     if (!document.getElementById('bowl3d')) { threeSettled = true; return; } // subpages: no hero
     var CDN = 'https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js';
-    function hero() { injectScript('js/hero3d.js', upgrade3D, threeFailed); }
-    injectScript(CDN, hero, function () {
-      injectScript('vendor/three.min.js', hero, threeFailed);
-    });
+    // Both three.js sources race from time zero — no fallback delay at all.
+    // A stalled CDN connection (mobile DNS/connect hang) fires neither onload
+    // nor onerror for 30-120s, so any design that WAITS on the CDN before
+    // trying the local copy strands first-time visitors on the SVG. Racing
+    // costs a partial duplicate download for the loser; the winner's handler
+    // detaches it immediately (no execution, fetch cancelled where possible).
+    // Single-init guarantee: script load handlers are sequential main-thread
+    // tasks, and the first win() flips heroLoaded before any other handler
+    // can run — hero3d.js is injected exactly once. If the loser's script
+    // already EXECUTED before being detached, it merely redefines window.THREE
+    // with the identical r128 build, which is harmless.
+    var heroLoaded = false, cdnEl = null, vendorEl = null, raceFailures = 0;
+    function detach(el) {
+      if (el && el.parentNode) { el.onload = null; el.onerror = null; el.remove(); }
+    }
+    function win(loser) {
+      if (heroLoaded || !window.THREE) return;
+      heroLoaded = true;
+      detach(loser());
+      injectScript('js/hero3d.js', upgrade3D, threeFailed);
+    }
+    function lose() {
+      // Only when BOTH sources have failed is 3D off the table this visit;
+      // the SVG bowl carries the hero (reveal isn't blocked either way —
+      // THREE_WAIT below caps how long the loader waits on any of this).
+      if (++raceFailures === 2 && !heroLoaded) threeFailed();
+    }
+    cdnEl = injectScript(CDN, function () { win(function () { return vendorEl; }); }, lose);
+    vendorEl = injectScript('vendor/three.min.js', function () { win(function () { return cdnEl; }); }, lose);
     setTimeout(function () { threeWaitOver = true; maybeHeroReady(); }, THREE_WAIT);
   }
   load3D(); // starts the download now — scripts sit at the end of <body>

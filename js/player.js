@@ -61,7 +61,7 @@
     } catch (e) { return null; }
   }
 
-  function saveState(quiet) {
+  function saveState() {
     if (!audio) return;
     try {
       var snap = {
@@ -74,8 +74,7 @@
         repeat: state.repeat
       };
       sessionStorage.setItem(STORE_KEY, JSON.stringify(snap));
-      if (!quiet) console.log('[bb-music] state saved', snap);
-    } catch (e) { console.log('[bb-music] save FAILED', e); }
+    } catch (e) { /* storage unavailable */ }
   }
 
   var state = {
@@ -134,7 +133,7 @@
     // single point of failure.
     audio.addEventListener('timeupdate', function () {
       var now = Date.now();
-      if (now - lastSave > 2000) { lastSave = now; saveState(true); }
+      if (now - lastSave > 2000) { lastSave = now; saveState(); }
     });
 
     els.Play.addEventListener('click', function () { if (audio.paused) safePlay(); else audio.pause(); });
@@ -201,14 +200,12 @@
   }
 
   function restoreSaved(gesturePlaying) {
-    console.log('[bb-music] restoring saved state', saved, 'gesturePlaying:', gesturePlaying);
     if (typeof saved.volume === 'number') audio.volume = saved.volume;
     audio.muted = !!saved.muted;
     if (state.shuffle) refillBag();
     if (saved.time > 0) {
       var seek = function () {
         try { audio.currentTime = saved.time; } catch (e) { /* metadata raced out */ }
-        console.log('[bb-music] seek to', saved.time, '→ currentTime now', audio.currentTime);
       };
       if (audio.readyState >= 1) seek();
       else audio.addEventListener('loadedmetadata', seek, { once: true });
@@ -219,13 +216,7 @@
       // blocked, that's the accepted fallback: stay paused with the right
       // track + timestamp loaded, so one tap on play continues from there.
       var p = audio.play();
-      if (p && p.then) p.then(function () {
-        console.log('[bb-music] auto-resume OK at', audio.currentTime);
-        markMusicOn();
-      }, function (err) {
-        console.log('[bb-music] auto-resume BLOCKED (' + err.name + ') — paused at restored position, one tap resumes');
-        updateUI();
-      });
+      if (p && p.then) p.then(markMusicOn, updateUI);
       else markMusicOn();
     } else if (saved.playing && gesturePlaying) {
       markMusicOn();

@@ -228,7 +228,7 @@
           <div id="heroLogo" style="display: flex; flex-direction: column; align-items: flex-start; font-size: clamp(56px, 9vw, 110px);">
             <div id="heroWordmark" style="font-family: 'Gameria', 'Lilita One', cursive; line-height: 1; padding-top: .12em; color: #FFC72C; text-shadow: -3px -3px 0 #2B1A12, 3px -3px 0 #2B1A12, -3px 3px 0 #2B1A12, 3px 3px 0 #2B1A12, 7px 8px 0 #D7263D;">
               <span style="display: block; margin-left: .63em;">BAM</span>
-              <span style="display: flex; align-items: flex-end; margin-top: -.24em;">BAM<img id="heroLogoCat" src="assets/images/bambam-cat-mascot-transparent.png" alt="" width="301" height="284" draggable="false" style="width: .5em; height: auto; flex: none; margin-left: -.14em; margin-bottom: -.01em;"></span>
+              <span style="display: flex; align-items: flex-end; margin-top: -.24em;">BAM<img id="heroLogoCat" src="assets/images/bambam-cat-mascot-transparent.png" alt="" width="168" height="159" draggable="false" style="width: .5em; height: auto; flex: none; margin-left: -.14em; margin-bottom: -.01em;"></span>
             </div>
             <div id="heroBadge" style="align-self: center; font-family: Rockwell, 'Roboto Slab', Georgia, serif; font-weight: 700; font-size: max(.16em, 10.5px); letter-spacing: .5em; color: #F0651C; background: #EFE8D8; border-radius: 999px; padding: .35em 1em .35em 1.5em; margin-top: .22em;">DINER</div>
           </div>
@@ -266,17 +266,56 @@
                 <ellipse cx="240" cy="224" rx="34" ry="10" fill="#F6CE74" stroke="#2B1A12" stroke-width="4"></ellipse>
               </g>
 
-              <!-- bowl -->
-              <rect x="194" y="380" width="92" height="28" rx="10" fill="#FFFDF6" stroke="#2B1A12" stroke-width="7"></rect>
-              <path d="M66 232 C70 322 132 388 240 388 C348 388 410 322 414 232 Z" fill="#FFFDF6" stroke="#2B1A12" stroke-width="8" stroke-linejoin="round"></path>
-              <text x="240" y="342" text-anchor="middle" font-family="Gameria, Lilita One, cursive" font-size="34" fill="#FFC72C" stroke="#2B1A12" stroke-width="1.5" style="letter-spacing: 2px;">BAM BAM</text>
-              <circle cx="130" cy="322" r="8" fill="#D7263D" stroke="#2B1A12" stroke-width="3"></circle>
-              <circle cx="350" cy="322" r="8" fill="#D7263D" stroke="#2B1A12" stroke-width="3"></circle>
-              <ellipse cx="240" cy="230" rx="176" ry="46" fill="#D7263D" stroke="#2B1A12" stroke-width="8"></ellipse>
-              <ellipse cx="240" cy="228" rx="150" ry="34" fill="#F3E3C2" stroke="#2B1A12" stroke-width="5"></ellipse>
+              <!-- bowl — low-poly facets matching the 3D scene's flat-shaded cone
+                   (same red body #D7263D family, gold band, dark red interior,
+                   3/4 tilt). Facets shade light→dark left to right, like the 3D
+                   bowl's directional light. Geometry generated from the same
+                   rim→foot profile the 3D lathe uses. -->
+              <g>
+                <polygon points="288.0,384.0 281.6,390.0 274.6,410.5 280.0,406.0" fill="#B03847"></polygon>
+                <polygon points="281.6,390.0 264.0,394.4 260.0,413.8 274.6,410.5" fill="#A5303E"></polygon>
+                <polygon points="264.0,394.4 240.0,396.0 240.0,415.0 260.0,413.8" fill="#992836"></polygon>
+                <polygon points="240.0,396.0 216.0,394.4 220.0,413.8 240.0,415.0" fill="#8E202D"></polygon>
+                <polygon points="216.0,394.4 198.4,390.0 205.4,410.5 220.0,413.8" fill="#821825"></polygon>
+                <polygon points="198.4,390.0 192.0,384.0 200.0,406.0 205.4,410.5" fill="#77101D"></polygon>
+                <polygon points="318.7,347.0 314.9,353.3 285.7,387.7 288.0,384.0" fill="#CF4153"></polygon>
+                <polygon points="314.9,353.3 303.7,358.9 278.8,391.1 285.7,387.7" fill="#C73C4D"></polygon>
+                <polygon points="303.7,358.9 286.3,363.3 268.2,393.7 278.8,391.1" fill="#C03748"></polygon>
+                <polygon points="286.3,363.3 264.3,366.2 254.8,395.4 268.2,393.7" fill="#B83242"></polygon>
+                <polygon points="264.3,366.2 240.0,367.2 240.0,396.0 254.8,395.4" fill="#B12C3D"></polygon>
+                <polygon points="240.0,367.2 215.7,366.2 225.2,395.4 240.0,396.0" fill="#A92737"></polygon>
+                <polygon points="215.7,366.2 193.7,363.3 211.8,393.7 225.2,395.4" fill="#A22232"></polygon>
+                <polygon points="193.7,363.3 176.3,358.9 201.2,391.1 211.8,393.7" fill="#9A1D2C"></polygon>
+                <polygon points="176.3,358.9 165.1,353.3 194.3,387.7 201.2,391.1" fill="#931827"></polygon>
+                <polygon points="165.1,353.3 161.3,347.0 192.0,384.0 194.3,387.7" fill="#8B1221"></polygon>
+                <polygon points="341.8,319.3 336.8,327.4 314.9,353.3 318.7,347.0" fill="#FFD75E"></polygon>
+                <polygon points="336.8,327.4 322.3,334.8 303.7,358.9 314.9,353.3" fill="#FBD058"></polygon>
+                <polygon points="322.3,334.8 299.8,340.6 286.3,363.3 303.7,358.9" fill="#F7C953"></polygon>
+                <polygon points="299.8,340.6 271.4,344.3 264.3,366.2 286.3,363.3" fill="#F2C34D"></polygon>
+                <polygon points="271.4,344.3 240.0,345.6 240.0,367.2 264.3,366.2" fill="#EEBC47"></polygon>
+                <polygon points="240.0,345.6 208.6,344.3 215.7,366.2 240.0,367.2" fill="#EAB542"></polygon>
+                <polygon points="208.6,344.3 180.2,340.6 193.7,363.3 215.7,366.2" fill="#E6AE3C"></polygon>
+                <polygon points="180.2,340.6 157.7,334.8 176.3,358.9 193.7,363.3" fill="#E1A836"></polygon>
+                <polygon points="157.7,334.8 143.2,327.4 165.1,353.3 176.3,358.9" fill="#DDA131"></polygon>
+                <polygon points="143.2,327.4 138.2,319.3 161.3,347.0 165.1,353.3" fill="#D99A2B"></polygon>
+                <polygon points="416.0,230.0 407.4,244.2 336.8,327.4 341.8,319.3" fill="#EB4A5E"></polygon>
+                <polygon points="407.4,244.2 382.4,257.0 322.3,334.8 336.8,327.4" fill="#E24458"></polygon>
+                <polygon points="382.4,257.0 343.5,267.2 299.8,340.6 322.3,334.8" fill="#DA3E52"></polygon>
+                <polygon points="343.5,267.2 294.4,273.7 271.4,344.3 299.8,340.6" fill="#D1384B"></polygon>
+                <polygon points="294.4,273.7 240.0,276.0 240.0,345.6 271.4,344.3" fill="#C93245"></polygon>
+                <polygon points="240.0,276.0 185.6,273.7 208.6,344.3 240.0,345.6" fill="#C02D3F"></polygon>
+                <polygon points="185.6,273.7 136.5,267.2 180.2,340.6 208.6,344.3" fill="#B82739"></polygon>
+                <polygon points="136.5,267.2 97.6,257.0 157.7,334.8 180.2,340.6" fill="#B02132"></polygon>
+                <polygon points="97.6,257.0 72.6,244.2 143.2,327.4 157.7,334.8" fill="#A71B2C"></polygon>
+                <polygon points="72.6,244.2 64.0,230.0 138.2,319.3 143.2,327.4" fill="#9E1526"></polygon>
+                <path d="M64,230 L192,384 L200,406 Q240,417 280,406 L288,384 L416,230" fill="none" stroke="#2B1A12" stroke-width="8" stroke-linejoin="round" stroke-linecap="round"></path>
+                <polygon points="416.0,230.0 392.4,253.0 328.0,269.8 240.0,276.0 152.0,269.8 87.6,253.0 64.0,230.0 87.6,207.0 152.0,190.2 240.0,184.0 328.0,190.2 392.4,207.0" fill="#D7263D" stroke="#2B1A12" stroke-width="8" stroke-linejoin="round"></polygon>
+                <polygon points="390.0,228.0 369.9,245.0 315.0,257.4 240.0,262.0 165.0,257.4 110.1,245.0 90.0,228.0 110.1,211.0 165.0,198.6 240.0,194.0 315.0,198.6 369.9,211.0" fill="#B71C31" stroke="#2B1A12" stroke-width="4" stroke-linejoin="round"></polygon>
+                <ellipse cx="240" cy="231" rx="112" ry="21" fill="#9E1526" opacity=".55"></ellipse>
+              </g>
 
               <!-- broth -->
-              <ellipse cx="240" cy="228" rx="142" ry="30" fill="#EEB64B" stroke="#D99A2B" stroke-width="4" style="transform-box: fill-box; transform-origin: center; transform: scale(calc(var(--broth, 0))); opacity: calc(var(--broth, 0) * 6);"></ellipse>
+              <polygon points="382.0,228.0 363.0,243.0 311.0,254.0 240.0,258.0 169.0,254.0 117.0,243.0 98.0,228.0 117.0,213.0 169.0,202.0 240.0,198.0 311.0,202.0 363.0,213.0" fill="#EEB64B" stroke="#D99A2B" stroke-width="4" stroke-linejoin="round" style="transform-box: fill-box; transform-origin: center; transform: scale(calc(var(--broth, 0))); opacity: calc(var(--broth, 0) * 6);"></polygon>
 
               <!-- noodles -->
               <g clip-path="url(#bbBrothClip)" style="transform-box: fill-box; transform-origin: center; transform: rotate(calc((1 - var(--noodles, 0)) * 150deg)) scale(calc(var(--noodles, 0))); opacity: calc(var(--noodles, 0) * 4);">
