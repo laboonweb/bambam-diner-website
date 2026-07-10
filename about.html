@@ -8,18 +8,144 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍜</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400..800&family=Lilita+One&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400..800&family=Lilita+One&display=swap" onload="this.onload=null;this.rel='stylesheet';window.__bbFontCss=1" onerror="window.__bbFontCss=1">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400..800&family=Lilita+One&display=swap"></noscript>
   <link rel="stylesheet" href="css/style.css">
   <link rel="preload" as="font" type="font/woff2" href="assets/fonts/GAMERIA.woff2" crossorigin>
+  <style>
+    /* Loading screen — critical CSS, inline so it paints before external assets.
+       The reveal is a noren-curtain split: two striped panels slide off opposite
+       edges (transform-only, duration set by JS for constant px/s velocity). */
+    #bbLoader { position: fixed; inset: 0; z-index: 200; display: flex; align-items: center; justify-content: center; font-family: 'Lilita One', 'Trebuchet MS', cursive; }
+    #bbLoader.done { pointer-events: none; }
+    .bbl-panel { position: absolute; top: 0; bottom: 0; width: 50.4%; display: flex; align-items: center; justify-content: center; background: repeating-linear-gradient(90deg, #D7263D 0 26px, #C92E24 26px 34px); transition: transform .8s cubic-bezier(.7, 0, .3, 1); will-change: transform; }
+    .bbl-panel::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 12px; background: #2B1A12; }
+    .bbl-panel-l { left: 0; border-right: 4px solid #2B1A12; }
+    .bbl-panel-r { right: 0; border-left: 4px solid #2B1A12; }
+    .bbl-glyph { font-size: clamp(70px, 12vw, 130px); font-weight: 800; color: rgba(255, 199, 44, .22); user-select: none; }
+    #bbLoader.done .bbl-panel-l { transform: translateX(-103%); }
+    #bbLoader.done .bbl-panel-r { transform: translateX(103%); }
+    .bbl-center { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 14px; transition: opacity .3s ease; }
+    #bbLoader.done .bbl-center { opacity: 0; }
+    /* Reduced motion: no curtain travel — plain quick fade of the whole loader
+       (the global reduced-motion rule shrinks this transition further). */
+    @media (prefers-reduced-motion: reduce) {
+      #bbLoader { transition: opacity .2s ease; }
+      #bbLoader.done { opacity: 0; }
+      .bbl-panel { transition: none !important; }
+      #bbLoader.done .bbl-panel-l, #bbLoader.done .bbl-panel-r { transform: none !important; }
+    }
+    .bbl-logo { font-family: 'Gameria', 'Lilita One', 'Trebuchet MS', cursive; font-size: clamp(44px, 9vw, 72px); color: #FFC72C; line-height: 1; text-shadow: -3px -3px 0 #2B1A12, 3px -3px 0 #2B1A12, -3px 3px 0 #2B1A12, 3px 3px 0 #2B1A12, 6px 7px 0 #D7263D; }
+    .bbl-badge { font-size: 15px; letter-spacing: 9px; color: #2B1A12; background: #FFC72C; border: 3px solid #2B1A12; border-radius: 8px; padding: 3px 4px 3px 13px; box-shadow: 3px 3px 0 #2B1A12; }
+    .bbl-dots { display: flex; gap: 9px; margin-top: 10px; }
+    .bbl-dots span { width: 13px; height: 13px; border-radius: 50%; border: 2.5px solid #2B1A12; animation: bblBob 1s ease-in-out infinite; }
+    .bbl-dots span:nth-child(1) { background: #D7263D; }
+    .bbl-dots span:nth-child(2) { background: #FFC72C; animation-delay: .15s; }
+    .bbl-dots span:nth-child(3) { background: #4E9C46; animation-delay: .3s; }
+    @keyframes bblBob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-9px); } }
+    .bbl-music { margin-top: 14px; font-family: inherit; font-size: 15px; letter-spacing: .5px; color: #2B1A12; background: #FFFDF6; border: 3px solid #2B1A12; border-radius: 999px; padding: 9px 20px; box-shadow: 3px 3px 0 #2B1A12; cursor: pointer; transition: transform .12s ease, box-shadow .12s ease, background .2s ease; }
+    .bbl-music:hover { transform: translate(1px, 1px); box-shadow: 2px 2px 0 #2B1A12; }
+    .bbl-music.on { background: #FFC72C; cursor: default; }
+  </style>
 </head>
 <body>
+
+<div id="bbLoader">
+  <div class="bbl-panel bbl-panel-l" aria-hidden="true"><span class="bbl-glyph">拉</span></div>
+  <div class="bbl-panel bbl-panel-r" aria-hidden="true"><span class="bbl-glyph">面</span></div>
+  <div class="bbl-center">
+    <div class="bbl-logo" aria-hidden="true">BAM BAM</div>
+    <div class="bbl-badge" aria-hidden="true">DINER</div>
+    <div class="bbl-dots" aria-hidden="true"><span></span><span></span><span></span></div>
+    <button id="bbLoaderMusic" class="bbl-music" type="button">🔊 Click to enable music</button>
+  </div>
+</div>
+<noscript><style>#bbLoader { display: none !important; }</style></noscript>
+<script>
+/* Loader bootstrap (subpage variant) — same reveal gating as index.html minus
+   the 3D wait: main.js still signals __bbHeroReady (no #bowl3d here, so its
+   3D gate settles immediately after first paint). MIN_SHOW keeps the curtain
+   an intentional branded beat instead of a flicker on these light pages;
+   the 4.5s hard cap stays as the same safety ceiling. */
+(function () {
+  var loader = document.getElementById('bbLoader');
+  document.documentElement.style.overflow = 'hidden';
+  var done = false, pageReady = false, heroReady = false, minShown = false;
+  var MIN_SHOW = 550;
+  function reveal() {
+    if (done) return;
+    done = true;
+    document.documentElement.style.overflow = '';
+    /* Same constant-velocity curtain as index: ~720px/s, clamped 340-1200ms */
+    var ms = Math.round(Math.max(340, Math.min(1200, (window.innerWidth / 2) / 0.72)));
+    var panels = loader.querySelectorAll('.bbl-panel');
+    for (var i = 0; i < panels.length; i++) panels[i].style.transitionDuration = ms + 'ms';
+    loader.classList.add('done');
+    window.__bbRevealed = true;
+    document.dispatchEvent(new Event('bb:reveal'));
+    setTimeout(function () { loader.style.display = 'none'; }, ms + 150);
+  }
+  function check() { if (pageReady && heroReady && minShown) reveal(); }
+  window.__bbHeroReady = function () { heroReady = true; check(); };
+  setTimeout(function () { minShown = true; check(); }, MIN_SHOW);
+  function whenFonts() {
+    var fonts = (document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve();
+    function ok() { pageReady = true; check(); }
+    fonts.then(ok, ok);
+  }
+  function afterDom() {
+    var t0 = Date.now();
+    (function poll() {
+      if (window.__bbFontCss || Date.now() - t0 > 2000) whenFonts();
+      else setTimeout(poll, 60);
+    })();
+  }
+  if (document.readyState !== 'loading') afterDom();
+  else document.addEventListener('DOMContentLoaded', afterDom);
+  setTimeout(reveal, 4500);
+
+  /* Enable-music bootstrap — same gesture rules as index.html (audio.play()
+     must run synchronously inside the click). player.js adopts __bbMusic and
+     restores any saved session state; keep this track list in sync with
+     index.html and player.js. */
+  var music = window.__bbMusic = {
+    tracks: [
+      'As Daylight Fades by Sulu',
+      'beneath the sakura by baegel',
+      'Slow Season by Loyae',
+      'Smooth Rift by Mhern',
+      'Tidal Waves by Auxjack'
+    ],
+    index: Math.floor(Math.random() * 5),
+    audio: null,
+    wanted: false
+  };
+  try {
+    var st = JSON.parse(sessionStorage.getItem('bbMusicState'));
+    if (st && typeof st.index === 'number' && st.index >= 0 && st.index < music.tracks.length) music.index = st.index;
+  } catch (e) { /* storage blocked: keep the random pick */ }
+  var mbtn = document.getElementById('bbLoaderMusic');
+  mbtn.addEventListener('click', function () {
+    if (music.wanted) return;
+    music.wanted = true;
+    if (!music.audio) {
+      music.audio = new Audio('audio/' + encodeURIComponent(music.tracks[music.index]) + '.mp3');
+      music.audio.volume = 0.7;
+    }
+    var p = music.audio.play();
+    if (p && p.catch) p.catch(function () {});
+    mbtn.classList.add('on');
+    mbtn.textContent = '🎵 Music on — enjoy!';
+    document.dispatchEvent(new Event('bb:musicwanted'));
+  });
+})();
+</script>
 
 <div style="font-family: 'Baloo 2', 'Trebuchet MS', sans-serif; background: #FFF7E9; color: #2B1A12; overflow-x: clip; min-height: 100svh; display: flex; flex-direction: column;">
 
   <!-- ============ NAV (shared) ============ -->
   <nav id="topNav" style="position: fixed; top: 0; left: 0; right: 0; z-index: 60; display: flex; align-items: center; gap: 14px; padding: 10px clamp(14px, 4vw, 36px); background: rgba(255,247,233,.94); backdrop-filter: blur(8px); border-bottom: 3px solid #2B1A12; transition: box-shadow .4s ease;">
-    <a href="index.html" style="text-decoration: none; display: flex; align-items: baseline; gap: 8px;">
+    <a href="index.html#bowl-done" style="text-decoration: none; display: flex; align-items: baseline; gap: 8px;">
       <span style="font-family: 'Gameria', 'Lilita One', cursive; font-size: 24px; color: #FFC72C; text-shadow: -2px -2px 0 #2B1A12, 2px -2px 0 #2B1A12, -2px 2px 0 #2B1A12, 2px 2px 0 #2B1A12, 4px 4px 0 #D7263D;">BAM BAM</span>
       <span style="font-family: 'Lilita One', cursive; font-size: 13px; letter-spacing: 3px; color: #2B1A12;">DINER</span>
     </a>
@@ -106,6 +232,55 @@
   </footer>
 </div>
 
+<!-- ============ FLOATING MUSIC PLAYER ============ -->
+<div id="bbPlayer" aria-label="Background music player">
+  <button id="bbpMini" class="bbp-mini" type="button" aria-label="Expand music player">
+    <span class="bbp-mini-eq" aria-hidden="true"><span></span><span></span><span></span></span>
+    <span id="bbpMiniTitle" class="bbp-mini-title">&nbsp;</span>
+  </button>
+  <div id="bbpPop" hidden>
+    <div class="bbp-controls">
+      <button id="bbpShuffle" class="bbp-chip" type="button" aria-pressed="false" aria-label="Shuffle off" title="Shuffle">
+        <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"/><path d="M4 20 21 3"/><path d="M21 16v5h-5"/><path d="m15 15 6 6"/><path d="m4 4 5 5"/></svg>
+      </button>
+      <button id="bbpRepeat" class="bbp-chip" type="button" aria-label="Repeat: off" title="Repeat">
+        <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m17 1 4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="m7 23-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+        <span id="bbpRepeatBadge" class="bbp-badge" aria-hidden="true">1</span>
+      </button>
+      <button id="bbpMute" class="bbp-chip" type="button" aria-pressed="false" aria-label="Mute" title="Mute / unmute">
+        <svg id="bbpMuteOn" viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4V5z" fill="currentColor" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.6 5.4a9.4 9.4 0 0 1 0 13.2" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+        <svg id="bbpMuteOff" viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4V5z" fill="currentColor" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="m16 9 6 6M22 9l-6 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
+      </button>
+      <input id="bbpVol" type="range" min="0" max="100" step="1" value="70" aria-label="Volume">
+    </div>
+    <ol id="bbpList" class="bbp-list"></ol>
+  </div>
+  <div class="bbp-pill">
+    <canvas id="bbpWave" width="52" height="26" aria-hidden="true"></canvas>
+    <div class="bbp-meta" aria-live="polite">
+      <div id="bbpTitle" class="bbp-title">&nbsp;</div>
+      <div id="bbpSub" class="bbp-sub">&nbsp;</div>
+    </div>
+    <button id="bbpPrev" class="bbp-btn" type="button" aria-label="Previous track" title="Previous">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 5v14L9 12l10-7z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M6 5v14" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/></svg>
+    </button>
+    <button id="bbpPlay" class="bbp-btn bbp-play" type="button" aria-label="Play" title="Play / pause">
+      <svg id="bbpPlayIco" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.5 4.8v14.4L20.5 12 8.5 4.8z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+      <svg id="bbpPauseIco" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13M16 5.5v13" fill="none" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/></svg>
+    </button>
+    <button id="bbpNext" class="bbp-btn" type="button" aria-label="Next track" title="Next">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5v14l10-7L5 5z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M18 5v14" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/></svg>
+    </button>
+    <button id="bbpMore" class="bbp-btn bbp-more" type="button" aria-expanded="false" aria-controls="bbpPop" aria-label="More music controls" title="More controls">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 14.5 12 8.5l6 6" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <button id="bbpFold" class="bbp-btn bbp-fold" type="button" aria-label="Collapse player" title="Collapse">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9.5l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+  </div>
+</div>
+
+<script src="js/player.js"></script>
 <script src="js/main.js"></script>
 </body>
 </html>

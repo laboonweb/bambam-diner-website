@@ -12,6 +12,11 @@
   // multiple swipes of pinned "nothing left to build" feel laggy.
   var HERO_LENGTH_VH = isTouch ? 480 : 520;
   var BUILD_END = isTouch ? 0.86 : 0.78;
+  // "Return home" lands here: just past build completion, in the pinned
+  // admire state (finished bowl, spin hint) — not back at the empty bowl,
+  // not released into the menu. Relative to BUILD_END so it holds on both
+  // the touch and mouse arms.
+  var HOME_P = BUILD_END + 0.04;
   var verb = isTouch ? 'swipe' : 'scroll';
   var raf = 0, lastCap = '', navScrolled = false;
   var has3d = false;
@@ -98,11 +103,37 @@
   }
   load3D(); // starts the download now — scripts sit at the end of <body>
 
+  // Scroll offset of the built-bowl admire state. Computed at call time, not
+  // cached: innerHeight moves under us on phones (Safari toolbar collapse) and
+  // the track height depends on the current viewport.
+  function homeScrollY(track) {
+    return track.offsetTop + Math.max(0, track.offsetHeight - window.innerHeight) * HOME_P;
+  }
+
   document.addEventListener('DOMContentLoaded', function () {
     var track = document.getElementById('heroTrack');
     if (track) {
       var fullH = (window.CSS && CSS.supports && CSS.supports('height', '100dvh')) ? '100dvh' : '100svh';
       track.style.height = reduced ? fullH : HERO_LENGTH_VH + 'vh';
+
+      // Logo → home lands on the finished bowl, not the empty one at scroll 0.
+      var home = document.getElementById('navHome');
+      if (home) {
+        home.addEventListener('click', function (e) {
+          e.preventDefault();
+          window.scrollTo({ top: homeScrollY(track), behavior: reduced ? 'auto' : 'smooth' });
+        });
+      }
+      // Subpage logos link to index.html#bowl-done: jump straight to the
+      // admire state before the loader reveals (instant — the CSS
+      // scroll-behavior: smooth would otherwise animate through the build).
+      if (location.hash === '#bowl-done') {
+        // 'instant' (not 'auto') — the html scroll-behavior:smooth rule makes
+        // 'auto' animate through the whole build sequence otherwise.
+        try { window.scrollTo({ top: homeScrollY(track), behavior: 'instant' }); }
+        catch (err) { window.scrollTo(0, homeScrollY(track)); }
+        try { history.replaceState(null, '', location.pathname); } catch (err) { /* file:// */ }
+      }
     }
 
     if (isTouch) {
@@ -114,6 +145,7 @@
 
     updateStatusBadge();
     setInterval(updateStatusBadge, 60 * 1000);
+    setupPetals();
 
     window.addEventListener('scroll', onScroll, { passive: true });
     // Debounced: Safari fires bursts of resizes while its toolbar collapses/expands
@@ -137,7 +169,7 @@
   function setupHeroIntro() {
     if (reduced || !document.getElementById('heroTrack')) return;
     if (!document.body.animate) return;
-    var ids = ['heroEyebrow', 'heroLogo', 'heroBadge', 'heroH1', 'heroPara', 'heroStatus', 'heroCtas'];
+    var ids = ['heroEyebrow', 'heroLogo', 'heroH1', 'heroPara', 'heroStatus', 'heroCtas'];
     var anims = [];
     ids.forEach(function (id, i) {
       var el = document.getElementById(id);
@@ -154,6 +186,35 @@
     function play() { anims.forEach(function (a) { a.play(); }); }
     if (!document.getElementById('bbLoader') || window.__bbRevealed) play();
     else document.addEventListener('bb:reveal', play, { once: true });
+  }
+
+  /* ---- Sakura petals: ambient site-wide layer. 12 elements animated purely
+     by CSS keyframes (transform + opacity, styles in style.css); the layer is
+     pointer-events: none so it can never intercept the bowl drag, nav, or
+     player taps. Paused while the tab is hidden; skipped under reduced motion
+     (a static frozen mid-fall scatter would just look broken). */
+  function setupPetals() {
+    if (reduced) return;
+    var layer = document.createElement('div');
+    layer.id = 'bbPetals';
+    layer.setAttribute('aria-hidden', 'true');
+    for (var i = 0; i < 12; i++) {
+      var p = document.createElement('i');
+      p.className = 'bb-petal';
+      var fall = 9 + Math.random() * 8; // seconds top→bottom
+      p.style.left = (Math.random() * 104 - 2) + '%';
+      p.style.width = (9 + Math.random() * 8) + 'px';
+      p.style.animationDuration = fall.toFixed(2) + 's';
+      // negative delay: petals are already mid-fall on load, no empty sky
+      p.style.animationDelay = (-Math.random() * fall).toFixed(2) + 's';
+      p.style.setProperty('--drift', (Math.random() * 24 - 6).toFixed(1) + 'vw');
+      p.style.setProperty('--spin', Math.round(180 + Math.random() * 540) + 'deg');
+      layer.appendChild(p);
+    }
+    document.body.appendChild(layer);
+    document.addEventListener('visibilitychange', function () {
+      layer.classList.toggle('bb-paused', document.hidden);
+    });
   }
 
   var resizeTimer = 0;
@@ -288,9 +349,10 @@
       });
     }, { rootMargin: '0px 0px -9% 0px', threshold: 0.08 });
     var vh = window.innerHeight;
+    var entrance = [];
     targets.forEach(function (pair) {
       var el = pair[0], delay = pair[1];
-      if (el.getBoundingClientRect().top < vh * 0.96) return;
+      if (el.getBoundingClientRect().top < vh * 0.96) { entrance.push(el); return; }
       try {
         var anim = el.animate(
           [{ opacity: 0, translate: '0 28px' }, { opacity: 1, translate: '0 0' }],
@@ -301,6 +363,27 @@
         io.observe(el);
       } catch (e) { /* older browser: leave content visible */ }
     });
+    // Reveal targets already in view at load (subpage headings, first cards)
+    // get a staggered entrance when the curtain opens — the same motion
+    // language as the homepage hero intro — instead of never animating.
+    // On index nothing with data-reveal sits inside the pinned hero, so this
+    // path only fires on the subpages.
+    if (entrance.length && document.getElementById('bbLoader') && !window.__bbRevealed) {
+      var anims = [];
+      entrance.forEach(function (el, i) {
+        try {
+          var a = el.animate(
+            [{ opacity: 0, translate: '0 26px' }, { opacity: 1, translate: '0 0' }],
+            { duration: 640, delay: Math.min(i * 85, 680), easing: 'cubic-bezier(.22, .61, .36, 1)', fill: 'backwards' }
+          );
+          a.pause();
+          anims.push(a);
+        } catch (e) { /* older browser: leave content visible */ }
+      });
+      document.addEventListener('bb:reveal', function () {
+        anims.forEach(function (a) { a.play(); });
+      }, { once: true });
+    }
   }
 
   function setupTiles() {

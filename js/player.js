@@ -7,9 +7,23 @@
 (function () {
   'use strict';
 
-  var m = window.__bbMusic;
+  // Subpages don't run the index loader's inline bootstrap — create the shared
+  // music handle here instead. Track list MUST match the inline one in
+  // index.html (that copy has to stay inline for the loader's gesture-play).
+  var m = window.__bbMusic || (window.__bbMusic = {
+    tracks: [
+      'As Daylight Fades by Sulu',
+      'beneath the sakura by baegel',
+      'Slow Season by Loyae',
+      'Smooth Rift by Mhern',
+      'Tidal Waves by Auxjack'
+    ],
+    index: Math.floor(Math.random() * 5),
+    audio: null,
+    wanted: false
+  });
   var root = document.getElementById('bbPlayer');
-  if (!m || !root) return;
+  if (!root) return;
 
   var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -30,12 +44,44 @@
     };
   });
 
-  // Session-only state, kept in memory (no localStorage). Mute lives on
-  // audio.muted so the volume level survives mute/unmute untouched.
+  /* ---- Cross-page persistence ----
+     sessionStorage (per-tab, gone when the tab closes — deliberately NOT
+     localStorage, playback shouldn't survive closing the browser). Saved on
+     pagehide, restored at init, so navigating index ↔ about ↔ faq keeps the
+     same track, position, and settings. Mute lives on audio.muted so the
+     volume level survives mute/unmute untouched. */
+  var STORE_KEY = 'bbMusicState';
+  var saved = readSaved();
+  var lastSave = 0;
+
+  function readSaved() {
+    try {
+      var st = JSON.parse(sessionStorage.getItem(STORE_KEY));
+      return (st && typeof st.index === 'number' && st.index >= 0 && st.index < m.tracks.length) ? st : null;
+    } catch (e) { return null; }
+  }
+
+  function saveState(quiet) {
+    if (!audio) return;
+    try {
+      var snap = {
+        index: state.index,
+        time: audio.currentTime || 0,
+        playing: !audio.paused,
+        volume: audio.volume,
+        muted: audio.muted,
+        shuffle: state.shuffle,
+        repeat: state.repeat
+      };
+      sessionStorage.setItem(STORE_KEY, JSON.stringify(snap));
+      if (!quiet) console.log('[bb-music] state saved', snap);
+    } catch (e) { console.log('[bb-music] save FAILED', e); }
+  }
+
   var state = {
-    index: m.index,
-    shuffle: false,
-    repeat: 0, // 0 off · 1 all · 2 one
+    index: saved ? saved.index : m.index,
+    shuffle: !!(saved && saved.shuffle),
+    repeat: saved ? (saved.repeat | 0) % 3 : 0, // 0 off · 1 all · 2 one
     history: [], // shuffle backtracking for "previous"
     bag: [] // shuffle: remaining not-yet-played indices
   };
@@ -61,21 +107,35 @@
     sizeCanvas();
 
     audio = m.audio;
+    // True when the loader button's gesture-play beat this init to it —
+    // restore must not pause/replay what the visitor just started.
+    var gesturePlaying = !!audio && !audio.paused;
     if (!audio) {
       // Lazy: preload none + no play() — no audio bytes move until the
-      // visitor actually starts playback.
+      // visitor actually starts playback. With saved state we need metadata
+      // so the restored currentTime seek can land.
       audio = m.audio = new Audio();
-      audio.preload = 'none';
+      audio.preload = saved ? 'metadata' : 'none';
       audio.src = tracks[state.index].file;
       audio.volume = 0.7;
     }
+    m.index = state.index;
+    if (saved) restoreSaved(gesturePlaying);
 
     buildList();
 
-    audio.addEventListener('play', function () { ensureGraph(); updateUI(); startWave(); });
-    audio.addEventListener('pause', function () { updateUI(); stopWave(); });
+    audio.addEventListener('play', function () { ensureGraph(); updateUI(); startWave(); saveState(); });
+    audio.addEventListener('pause', function () { updateUI(); stopWave(); saveState(); });
     audio.addEventListener('ended', onEnded);
     audio.addEventListener('volumechange', updateUI);
+    // Continuous throttled save while playing: state is inspectable in
+    // DevTools mid-playback and survives navigations where the browser never
+    // delivers pagehide (killed tab, crash) — the unload save alone was a
+    // single point of failure.
+    audio.addEventListener('timeupdate', function () {
+      var now = Date.now();
+      if (now - lastSave > 2000) { lastSave = now; saveState(true); }
+    });
 
     els.Play.addEventListener('click', function () { if (audio.paused) safePlay(); else audio.pause(); });
     els.Next.addEventListener('click', function () { goNext(false); });
@@ -127,11 +187,58 @@
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closePop(); });
     window.addEventListener('resize', sizeCanvas, { passive: true });
     document.addEventListener('bb:musicwanted', updateUI);
+    // pagehide fires reliably on navigation including iOS Safari (unlike
+    // beforeunload); visibilitychange-hidden covers backgrounded closes.
+    window.addEventListener('pagehide', saveState);
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden) saveState();
+    });
 
     updateUI();
     drawWave();
     // Adopted audio may already be playing (loader click landed before init)
     if (!audio.paused) { ensureGraph(); startWave(); }
+  }
+
+  function restoreSaved(gesturePlaying) {
+    console.log('[bb-music] restoring saved state', saved, 'gesturePlaying:', gesturePlaying);
+    if (typeof saved.volume === 'number') audio.volume = saved.volume;
+    audio.muted = !!saved.muted;
+    if (state.shuffle) refillBag();
+    if (saved.time > 0) {
+      var seek = function () {
+        try { audio.currentTime = saved.time; } catch (e) { /* metadata raced out */ }
+        console.log('[bb-music] seek to', saved.time, '→ currentTime now', audio.currentTime);
+      };
+      if (audio.readyState >= 1) seek();
+      else audio.addEventListener('loadedmetadata', seek, { once: true });
+    }
+    if (saved.playing && !gesturePlaying) {
+      // Every page load is a fresh autoplay context (Safari especially), even
+      // though the visitor interacted on the previous page. If the resume is
+      // blocked, that's the accepted fallback: stay paused with the right
+      // track + timestamp loaded, so one tap on play continues from there.
+      var p = audio.play();
+      if (p && p.then) p.then(function () {
+        console.log('[bb-music] auto-resume OK at', audio.currentTime);
+        markMusicOn();
+      }, function (err) {
+        console.log('[bb-music] auto-resume BLOCKED (' + err.name + ') — paused at restored position, one tap resumes');
+        updateUI();
+      });
+      else markMusicOn();
+    } else if (saved.playing && gesturePlaying) {
+      markMusicOn();
+    }
+  }
+
+  // Resume succeeded: reflect it on the index loader's music button so the
+  // visitor isn't asked to "enable music" that is already playing.
+  function markMusicOn() {
+    m.wanted = true;
+    var b = document.getElementById('bbLoaderMusic');
+    if (b) { b.classList.add('on'); b.textContent = '🎵 Music on — enjoy!'; }
+    updateUI();
   }
 
   function safePlay() {

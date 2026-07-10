@@ -18,10 +18,32 @@
        visible swap on the loader/hero wordmark. crossorigin is required on
        font preloads even same-origin, else the fetch is discarded. -->
   <link rel="preload" as="font" type="font/woff2" href="assets/fonts/GAMERIA.woff2" crossorigin>
+  <!-- Cat mascot in the hero lockup — above the fold and revealed with the
+       intro animation, so fetch it early instead of letting it pop in. -->
+  <link rel="preload" as="image" href="assets/images/bambam-cat-mascot-transparent.png" fetchpriority="high">
   <style>
-    /* Loading screen — critical CSS, inline so it paints before external assets */
-    #bbLoader { position: fixed; inset: 0; z-index: 200; background: #FFF7E9; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; transition: opacity .45s ease; font-family: 'Lilita One', 'Trebuchet MS', cursive; }
-    #bbLoader.done { opacity: 0; pointer-events: none; }
+    /* Loading screen — critical CSS, inline so it paints before external assets.
+       The reveal is a noren-curtain split: two striped panels slide off opposite
+       edges (transform-only, duration set by JS for constant px/s velocity). */
+    #bbLoader { position: fixed; inset: 0; z-index: 200; display: flex; align-items: center; justify-content: center; font-family: 'Lilita One', 'Trebuchet MS', cursive; }
+    #bbLoader.done { pointer-events: none; }
+    .bbl-panel { position: absolute; top: 0; bottom: 0; width: 50.4%; display: flex; align-items: center; justify-content: center; background: repeating-linear-gradient(90deg, #D7263D 0 26px, #C92E24 26px 34px); transition: transform .8s cubic-bezier(.7, 0, .3, 1); will-change: transform; }
+    .bbl-panel::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 12px; background: #2B1A12; }
+    .bbl-panel-l { left: 0; border-right: 4px solid #2B1A12; }
+    .bbl-panel-r { right: 0; border-left: 4px solid #2B1A12; }
+    .bbl-glyph { font-size: clamp(70px, 12vw, 130px); font-weight: 800; color: rgba(255, 199, 44, .22); user-select: none; }
+    #bbLoader.done .bbl-panel-l { transform: translateX(-103%); }
+    #bbLoader.done .bbl-panel-r { transform: translateX(103%); }
+    .bbl-center { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 14px; transition: opacity .3s ease; }
+    #bbLoader.done .bbl-center { opacity: 0; }
+    /* Reduced motion: no curtain travel — plain quick fade of the whole loader
+       (the global reduced-motion rule shrinks this transition further). */
+    @media (prefers-reduced-motion: reduce) {
+      #bbLoader { transition: opacity .2s ease; }
+      #bbLoader.done { opacity: 0; }
+      .bbl-panel { transition: none !important; }
+      #bbLoader.done .bbl-panel-l, #bbLoader.done .bbl-panel-r { transform: none !important; }
+    }
     .bbl-logo { font-family: 'Gameria', 'Lilita One', 'Trebuchet MS', cursive; font-size: clamp(44px, 9vw, 72px); color: #FFC72C; line-height: 1; text-shadow: -3px -3px 0 #2B1A12, 3px -3px 0 #2B1A12, -3px 3px 0 #2B1A12, 3px 3px 0 #2B1A12, 6px 7px 0 #D7263D; }
     .bbl-badge { font-size: 15px; letter-spacing: 9px; color: #2B1A12; background: #FFC72C; border: 3px solid #2B1A12; border-radius: 8px; padding: 3px 4px 3px 13px; box-shadow: 3px 3px 0 #2B1A12; }
     .bbl-dots { display: flex; gap: 9px; margin-top: 10px; }
@@ -38,10 +60,14 @@
 <body>
 
 <div id="bbLoader">
-  <div class="bbl-logo" aria-hidden="true">BAM BAM</div>
-  <div class="bbl-badge" aria-hidden="true">DINER</div>
-  <div class="bbl-dots" aria-hidden="true"><span></span><span></span><span></span></div>
-  <button id="bbLoaderMusic" class="bbl-music" type="button">🔊 Click to enable music</button>
+  <div class="bbl-panel bbl-panel-l" aria-hidden="true"><span class="bbl-glyph">拉</span></div>
+  <div class="bbl-panel bbl-panel-r" aria-hidden="true"><span class="bbl-glyph">面</span></div>
+  <div class="bbl-center">
+    <div class="bbl-logo" aria-hidden="true">BAM BAM</div>
+    <div class="bbl-badge" aria-hidden="true">DINER</div>
+    <div class="bbl-dots" aria-hidden="true"><span></span><span></span><span></span></div>
+    <button id="bbLoaderMusic" class="bbl-music" type="button">🔊 Click to enable music</button>
+  </div>
 </div>
 <noscript><style>#bbLoader { display: none !important; }</style></noscript>
 <script>
@@ -58,10 +84,17 @@
     if (done) return;
     done = true;
     document.documentElement.style.overflow = '';
+    /* Curtain duration = travel / velocity, so panels move at a constant
+       ~720px/s whatever the screen width (each travels ~half the viewport).
+       Clamped so tiny phones don't blink and ultrawides don't drag.
+       Reduced-motion CSS overrides the transition entirely (plain fade). */
+    var ms = Math.round(Math.max(340, Math.min(1200, (window.innerWidth / 2) / 0.72)));
+    var panels = loader.querySelectorAll('.bbl-panel');
+    for (var i = 0; i < panels.length; i++) panels[i].style.transitionDuration = ms + 'ms';
     loader.classList.add('done');
     window.__bbRevealed = true;
     document.dispatchEvent(new Event('bb:reveal'));
-    setTimeout(function () { loader.style.display = 'none'; }, 600);
+    setTimeout(function () { loader.style.display = 'none'; }, ms + 150);
   }
   function check() { if (pageReady && heroReady) reveal(); }
   window.__bbHeroReady = function () { heroReady = true; check(); };
@@ -104,6 +137,14 @@
     wanted: false
   };
   music.index = Math.floor(Math.random() * music.tracks.length);
+  /* Mid-session navigation back to the homepage: keep the same track the
+     visitor was hearing, so a loader-button click resumes it rather than
+     rolling a new random one. player.js owns the full restore (time, volume,
+     shuffle...) — this only aligns which track a pre-init gesture plays. */
+  try {
+    var st = JSON.parse(sessionStorage.getItem('bbMusicState'));
+    if (st && typeof st.index === 'number' && st.index >= 0 && st.index < music.tracks.length) music.index = st.index;
+  } catch (e) { /* storage blocked: keep the random pick */ }
   var mbtn = document.getElementById('bbLoaderMusic');
   mbtn.addEventListener('click', function () {
     if (music.wanted) return;
@@ -125,7 +166,7 @@
 
   <!-- ============ NAV ============ -->
   <nav id="topNav" style="position: fixed; top: 0; left: 0; right: 0; z-index: 60; display: flex; align-items: center; gap: 14px; padding: 10px clamp(14px, 4vw, 36px); background: rgba(255,247,233,.94); backdrop-filter: blur(8px); border-bottom: 3px solid #2B1A12; transition: box-shadow .4s ease;">
-    <a href="#top" style="text-decoration: none; display: flex; align-items: baseline; gap: 8px;">
+    <a id="navHome" href="#top" style="text-decoration: none; display: flex; align-items: baseline; gap: 8px;">
       <span style="font-family: 'Gameria', 'Lilita One', cursive; font-size: 24px; color: #FFC72C; text-shadow: -2px -2px 0 #2B1A12, 2px -2px 0 #2B1A12, -2px 2px 0 #2B1A12, 2px 2px 0 #2B1A12, 4px 4px 0 #D7263D;">BAM BAM</span>
       <span style="font-family: 'Lilita One', cursive; font-size: 13px; letter-spacing: 3px; color: #2B1A12;">DINER</span>
     </a>
@@ -179,34 +220,18 @@
         <!-- Left: identity -->
         <div id="top" style="display: flex; flex-direction: column; gap: clamp(8px, 1.6vh, 16px); align-items: flex-start;">
           <div id="heroEyebrow" style="font-weight: 800; letter-spacing: 4px; font-size: 13px; color: #C8321F; text-transform: uppercase;">拉面 · Ramen House · Zambales</div>
-          <div id="heroLogo" style="font-family: 'Gameria', 'Lilita One', cursive; font-size: clamp(56px, 9vw, 110px); line-height: .92; color: #FFC72C; text-shadow: -3px -3px 0 #2B1A12, 3px -3px 0 #2B1A12, -3px 3px 0 #2B1A12, 3px 3px 0 #2B1A12, 7px 8px 0 #D7263D; display: flex; align-items: flex-end; gap: .08em;">
-            <span>BAM<br>BAM</span>
-            <!-- Cat mascot from the real Bambam Diner logo (assets/images/bambamdinerpfp.png),
-                 redrawn as vector to match the site's linework. Static part of the
-                 logo lockup — not tied to the bowl-build scroll animation. -->
-            <svg id="heroLogoCat" viewBox="0 0 132 116" aria-hidden="true" style="width: .84em; height: auto; flex: none; margin-bottom: .03em; text-shadow: none;">
-              <path d="M38 21 L30 3 L52 12 Z" fill="#FFFFFF" stroke="#2B1A12" stroke-width="5" stroke-linejoin="round"></path>
-              <path d="M78 21 L86 3 L64 12 Z" fill="#FFFFFF" stroke="#2B1A12" stroke-width="5" stroke-linejoin="round"></path>
-              <ellipse cx="62" cy="80" rx="35" ry="28" fill="#FFFFFF" stroke="#2B1A12" stroke-width="5"></ellipse>
-              <ellipse cx="42" cy="103" rx="12" ry="8.5" fill="#FFFFFF" stroke="#2B1A12" stroke-width="5"></ellipse>
-              <ellipse cx="86" cy="103" rx="12" ry="8.5" fill="#FFFFFF" stroke="#2B1A12" stroke-width="5"></ellipse>
-              <ellipse cx="58" cy="36" rx="31" ry="27" fill="#FFFFFF" stroke="#2B1A12" stroke-width="5"></ellipse>
-              <ellipse cx="60" cy="58" rx="21" ry="12" fill="#FFFFFF"></ellipse>
-              <rect x="18" y="72" width="27" height="25" rx="5" fill="#D7263D" stroke="#2B1A12" stroke-width="5"></rect>
-              <path d="M18 78 q-11 1 -9 10 q2 8 10 7" fill="none" stroke="#2B1A12" stroke-width="4.5"></path>
-              <text x="31.5" y="84" text-anchor="middle" font-family="'Baloo 2', 'Trebuchet MS', sans-serif" font-weight="800" font-size="8.5" fill="#FFF7E9" letter-spacing="1">XO</text>
-              <text x="31.5" y="93.5" text-anchor="middle" font-family="'Baloo 2', 'Trebuchet MS', sans-serif" font-weight="800" font-size="8.5" fill="#FFF7E9" letter-spacing="1">XO</text>
-              <ellipse cx="45" cy="72" rx="7" ry="5.5" fill="#FFFFFF" stroke="#2B1A12" stroke-width="4"></ellipse>
-              <path d="M82 68 Q94 61 92 48" fill="none" stroke="#2B1A12" stroke-width="4.5" stroke-linecap="round"></path>
-              <ellipse cx="90" cy="46" rx="8" ry="6.5" fill="#FFFFFF" stroke="#2B1A12" stroke-width="4"></ellipse>
-              <ellipse cx="47" cy="34" rx="3.2" ry="4.2" fill="#2B1A12"></ellipse>
-              <ellipse cx="69" cy="34" rx="3.2" ry="4.2" fill="#2B1A12"></ellipse>
-              <path d="M52 43 q3.5 4.5 6.5 0 q3.5 4.5 6.5 0" fill="none" stroke="#2B1A12" stroke-width="3" stroke-linecap="round"></path>
-              <path d="M89 29 l16 -3 M90 35 l16 1 M89 41 l14 5" fill="none" stroke="#2B1A12" stroke-width="2.5" stroke-linecap="round"></path>
-              <path d="M27 29 l-14 -3 M26 35 l-14 1" fill="none" stroke="#2B1A12" stroke-width="2.5" stroke-linecap="round"></path>
-            </svg>
+          <!-- Logo lockup rebuilt from live elements (layered Gameria text + real cat
+               asset + pill), replacing the flat raster which lost the outline/shadow
+               depth. Offsets are measured from assets/images/bambam-full-logo-transparent.png
+               (line ink height L=460px there): top line indented .75L, lines interlock
+               by .30L, cat .62L tall overlapping the M by .15L, pill 1.83L wide. -->
+          <div id="heroLogo" style="display: flex; flex-direction: column; align-items: flex-start; font-size: clamp(56px, 9vw, 110px);">
+            <div id="heroWordmark" style="font-family: 'Gameria', 'Lilita One', cursive; line-height: 1; padding-top: .12em; color: #FFC72C; text-shadow: -3px -3px 0 #2B1A12, 3px -3px 0 #2B1A12, -3px 3px 0 #2B1A12, 3px 3px 0 #2B1A12, 7px 8px 0 #D7263D;">
+              <span style="display: block; margin-left: .63em;">BAM</span>
+              <span style="display: flex; align-items: flex-end; margin-top: -.24em;">BAM<img id="heroLogoCat" src="assets/images/bambam-cat-mascot-transparent.png" alt="" width="301" height="284" draggable="false" style="width: .5em; height: auto; flex: none; margin-left: -.14em; margin-bottom: -.01em;"></span>
+            </div>
+            <div id="heroBadge" style="align-self: center; font-family: Rockwell, 'Roboto Slab', Georgia, serif; font-weight: 700; font-size: max(.16em, 10.5px); letter-spacing: .5em; color: #F0651C; background: #EFE8D8; border-radius: 999px; padding: .35em 1em .35em 1.5em; margin-top: .22em;">DINER</div>
           </div>
-          <div id="heroBadge" style="font-family: 'Lilita One', cursive; font-size: clamp(15px, 2vw, 20px); letter-spacing: 10px; color: #2B1A12; background: #FFC72C; border: 3px solid #2B1A12; border-radius: 8px; padding: 3px 6px 3px 16px; box-shadow: 3px 3px 0 #2B1A12;">DINER</div>
           <h1 id="heroH1" style="margin: 6px 0 0; font-family: 'Lilita One', cursive; font-weight: 400; font-size: clamp(20px, 2.6vw, 30px); line-height: 1.2; color: #2B1A12; max-width: 26ch;">Rich, bold, authentic ramen — slow-boiled 13–15 hours.</h1>
           <p id="heroPara" style="margin: 0; font-size: clamp(15px, 1.6vw, 17px); line-height: 1.5; max-width: 44ch; color: #4A362B;">Creamy broth simmered 13–15 hours, served with marinated melt-in-your-mouth chashu or spicy ground pork. And for dessert? Korean bingsu — shaved snow, piled high.</p>
           <div id="heroStatus" style="display: flex; align-items: center; gap: 8px; background: #FFFDF6; border: 3px solid #2B1A12; border-radius: 999px; padding: 5px 14px; font-weight: 800; font-size: 14px; box-shadow: 3px 3px 0 #2B1A12;">
