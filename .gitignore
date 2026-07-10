@@ -1,0 +1,19 @@
+# OS cruft
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editors
+.vscode/
+.idea/
+
+# Dependencies / build output (none today — future-proofing)
+node_modules/
+dist/
+
+# Local env / secrets
+.env
+.env.*
+
+# Logs
+*.log

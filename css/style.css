@@ -1,0 +1,495 @@
+/* ---- Gameria (commercially licensed, self-hosted) — the real wordmark font.
+        Uppercase-only glyph set: every use must be literal caps. Lilita One
+        (the previous visual approximation) stays in the stack as the fallback
+        if the file fails to load. Only .woff2 was supplied; woff2 covers all
+        current browsers and older ones just keep the Lilita One fallback. ---- */
+@font-face {
+  font-family: 'Gameria';
+  src: url('../assets/fonts/GAMERIA.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: #FFF7E9; }
+a { color: #C8321F; }
+a:hover { color: #96200F; }
+::selection { background: #FFC72C; color: #2B1A12; }
+
+@keyframes bbSteam {
+  0% { transform: translateY(10px); opacity: 0; }
+  30% { opacity: .85; }
+  100% { transform: translateY(-30px); opacity: 0; }
+}
+@keyframes bbSway {
+  0%, 100% { transform: rotate(3deg); }
+  50% { transform: rotate(-3deg); }
+}
+@keyframes bbBob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(7px); }
+}
+@keyframes bbFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-11px); }
+}
+@keyframes bbPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: .45; }
+}
+
+/* ---- Nav ---- */
+.nav-links {
+  display: flex; align-items: center;
+  gap: clamp(10px, 2.5vw, 24px);
+  font-weight: 700; font-size: 15px;
+}
+.nav-link { text-decoration: none; color: #2B1A12; padding: 10px 2px; }
+.nav-link:hover { color: #C8321F; }
+.btn-call {
+  text-decoration: none; background: #D7263D; color: #FFF7E9;
+  border: 3px solid #2B1A12; border-radius: 999px; padding: 6px 16px;
+  font-weight: 800; box-shadow: 3px 3px 0 #2B1A12; white-space: nowrap;
+  transition: background .2s ease;
+}
+.btn-call:hover { background: #B71C31; color: #FFF7E9; }
+.nav-toggle { display: none; }
+
+/* Hamburger nav below tablet width */
+@media (max-width: 767px) {
+  .nav-toggle {
+    display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 5px;
+    width: 44px; height: 44px; flex: none;
+    background: #FFFDF6; border: 3px solid #2B1A12; border-radius: 12px;
+    box-shadow: 3px 3px 0 #2B1A12; cursor: pointer; padding: 0;
+  }
+  .nav-toggle span {
+    display: block; width: 20px; height: 3px; border-radius: 2px; background: #2B1A12;
+    transition: transform .25s ease, opacity .2s ease;
+  }
+  .nav-toggle[aria-expanded="true"] span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+  .nav-toggle[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+  .nav-toggle[aria-expanded="true"] span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+  .nav-links {
+    display: none;
+    position: absolute; top: 100%; left: 0; right: 0;
+    flex-direction: column; align-items: stretch; gap: 0;
+    background: #FFF7E9; border-bottom: 3px solid #2B1A12;
+    box-shadow: 0 16px 26px rgba(43, 26, 18, .18);
+    padding: 4px 0 10px;
+  }
+  .nav-links.open { display: flex; }
+  .nav-links .nav-link {
+    display: flex; align-items: center; min-height: 48px; box-sizing: border-box;
+    padding: 10px clamp(18px, 6vw, 30px); font-size: 17px;
+    border-top: 2px dashed rgba(43, 26, 18, .14);
+  }
+  .nav-links .nav-link:first-child { border-top: none; }
+}
+
+/* ---- Hero CTAs ---- */
+.btn-chunky {
+  text-decoration: none; font-family: 'Lilita One', cursive; font-size: 18px;
+  border: 3px solid #2B1A12; border-radius: 14px; padding: 10px 22px;
+  box-shadow: 4px 4px 0 #2B1A12;
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+.btn-chunky:hover { transform: translate(2px, 2px); box-shadow: 2px 2px 0 #2B1A12; }
+.btn-chunky[href^="tel"]:hover { color: #FFF7E9; }
+.btn-chunky[href="#visit"]:hover { color: #2B1A12; }
+
+/* ---- Menu cards ---- */
+.menu-card {
+  background: #FFFDF6; border: 4px solid #2B1A12; border-radius: 22px;
+  box-shadow: 7px 7px 0 #2B1A12;
+  transition: transform .28s cubic-bezier(.33, 1, .68, 1), box-shadow .28s cubic-bezier(.33, 1, .68, 1);
+}
+.menu-card:hover { transform: translateY(-6px); box-shadow: 10px 14px 0 #2B1A12; }
+.menu-card:active { transform: translateY(-2px); box-shadow: 8px 10px 0 #2B1A12; }
+
+/* ---- Review cards ---- */
+.review-card {
+  background: #FFFDF6; border: 3.5px solid #2B1A12; border-radius: 18px; padding: 22px;
+  box-shadow: 5px 5px 0 var(--shcol, #2B1A12); transform: rotate(var(--rot, 0deg));
+  display: flex; flex-direction: column; gap: 10px;
+  transition: transform .28s cubic-bezier(.33, 1, .68, 1), box-shadow .28s cubic-bezier(.33, 1, .68, 1);
+}
+.review-card:hover { transform: rotate(var(--rot, 0deg)) translateY(-5px); box-shadow: 7px 10px 0 var(--shcol, #2B1A12); }
+
+/* ---- Visit buttons & links ---- */
+.btn-visit-yellow {
+  text-decoration: none; font-family: 'Lilita One', cursive; font-size: 17px;
+  background: #FFC72C; color: #2B1A12; border: 3px solid #FFF7E9;
+  border-radius: 14px; padding: 10px 20px; box-shadow: 4px 4px 0 #D7263D;
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+.btn-visit-yellow:hover { transform: translate(2px, 2px); box-shadow: 2px 2px 0 #D7263D; color: #2B1A12; }
+.btn-visit-ghost {
+  text-decoration: none; font-family: 'Lilita One', cursive; font-size: 17px;
+  background: transparent; color: #FFF7E9; border: 3px solid #FFF7E9;
+  border-radius: 14px; padding: 10px 20px;
+  transition: background .2s ease;
+}
+.btn-visit-ghost:hover { background: #D7263D; color: #FFF7E9; }
+.maps-link { text-decoration: none; color: #FFC72C; font-weight: 800; font-size: 15px; align-self: flex-end; }
+.maps-link:hover { color: #FFDD70; }
+
+/* ---- Footer ---- */
+.footer-link { color: #E8D9C4; }
+.footer-link:hover { color: #FFC72C; }
+
+/* ---- Hero bowl: never wider than its grid column ---- */
+#bowlWrap { max-width: 100%; }
+
+/* ---- Hero caption / progress bar: breathing room below the bowl ---- */
+#stageCaption { margin-top: 4px; }
+#buildBar { margin-top: 8px; }
+
+/* ---- Pinned hero: dynamic viewport height where supported (Safari toolbar collapse) ---- */
+@supports (height: 100dvh) {
+  #heroSticky { height: 100dvh !important; }
+}
+
+/* ---- Stats marquee ---- */
+#statsMarquee {
+  position: relative; z-index: 2; overflow: hidden;
+  background: linear-gradient(115deg, #1C0F09 0%, #35110C 55%, #48140F 100%);
+  border-top: 3px solid #2B1A12;
+  padding: 13px 0;
+  font-family: 'Baloo 2', 'Trebuchet MS', sans-serif;
+}
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: bbMarquee 48s linear infinite;
+}
+#statsMarquee:hover .marquee-track { animation-play-state: paused; }
+.marquee-group {
+  display: flex; align-items: center; flex: none;
+  gap: clamp(30px, 4.5vw, 52px);
+  padding-right: clamp(30px, 4.5vw, 52px);
+}
+.stat-item {
+  display: flex; align-items: center; gap: 10px;
+  white-space: nowrap; color: #E8D9C4;
+  font-weight: 700; font-size: 15px;
+}
+.stat-item svg { width: 21px; height: 21px; flex: none; }
+.stat-item b {
+  font-family: 'Lilita One', cursive; font-weight: 400;
+  font-size: 18px; color: #FFC72C; letter-spacing: .5px;
+}
+@keyframes bbMarquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+/* Reduced motion: the global rule below freezes the loop, leaving the strip static */
+@media (max-width: 640px) {
+  #statsMarquee { padding: 10px 0; }
+  .stat-item { font-size: 13px; gap: 7px; }
+  .stat-item b { font-size: 15px; }
+  .stat-item svg { width: 17px; height: 17px; }
+  .marquee-group { gap: 26px; padding-right: 26px; }
+}
+
+/* ---- FAQ accordions ---- */
+.faq-item {
+  background: #FFFDF6; border: 4px solid #2B1A12; border-radius: 18px;
+  box-shadow: 5px 5px 0 #2B1A12; overflow: hidden;
+}
+.faq-item summary {
+  list-style: none; cursor: pointer;
+  display: flex; justify-content: space-between; align-items: center; gap: 14px;
+  padding: 16px 20px;
+  font-family: 'Lilita One', cursive; font-size: clamp(16px, 2vw, 19px); color: #2B1A12;
+}
+.faq-item summary::-webkit-details-marker { display: none; }
+.faq-item summary::after {
+  content: '+'; font-size: 28px; line-height: 1; color: #D7263D; flex: none;
+  transition: transform .25s ease;
+}
+.faq-item[open] summary::after { transform: rotate(45deg); }
+.faq-item summary:hover { background: #FFF3DC; }
+.faq-a { padding: 0 20px 18px; color: #4A362B; font-weight: 600; line-height: 1.6; font-size: 16px; }
+
+/* ---- Gallery: 4×2 on desktop AND tablets, single column on phones ---- */
+#galleryGrid { grid-template-columns: repeat(4, 1fr) !important; }
+#galleryGrid > div { height: auto !important; aspect-ratio: 1 / 1; }
+@media (max-width: 900px) {
+  #galleryGrid { gap: 12px !important; }
+}
+@media (max-width: 600px) {
+  #galleryGrid { grid-template-columns: 1fr !important; gap: 16px !important; }
+  #galleryGrid > div { aspect-ratio: 4 / 3; }
+}
+
+/* ---- Hero 3D canvas: crossfades in over the state-matched SVG when the
+        deferred three.js stack arrives after the reveal (snapped to opaque
+        pre-reveal — see upgrade3D in main.js) ---- */
+#bowl3d { opacity: 0; transition: opacity .45s ease; }
+#bowlFallback { transition: opacity .45s ease; }
+
+/* ---- Floating music player ---- */
+#bbPlayer {
+  position: fixed; right: 14px; bottom: 14px; z-index: 90;
+  font-family: 'Baloo 2', 'Trebuchet MS', sans-serif;
+  pointer-events: none; /* container may be larger than the visible layer */
+}
+#bbPlayer .bbp-pill, #bbPlayer .bbp-mini, #bbPlayer #bbpPop { pointer-events: auto; }
+.bbp-pill {
+  display: flex; align-items: center; gap: 8px;
+  background: #FFFDF6; border: 3px solid #2B1A12; border-radius: 999px;
+  padding: 7px 9px 7px 14px; box-shadow: 4px 4px 0 #2B1A12;
+}
+#bbpWave { width: 52px; height: 26px; flex: none; }
+.bbp-meta { min-width: 0; max-width: 150px; line-height: 1.18; margin-right: 2px; }
+.bbp-title {
+  font-family: 'Lilita One', cursive; font-size: 14px; letter-spacing: .3px; color: #2B1A12;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.bbp-sub {
+  font-size: 11px; font-weight: 600; color: #97806D;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.bbp-btn {
+  width: 34px; height: 34px; flex: none;
+  display: inline-flex; align-items: center; justify-content: center; padding: 0;
+  background: #FFF7E9; color: #2B1A12; border: 2.5px solid #2B1A12; border-radius: 50%;
+  cursor: pointer; transition: transform .12s ease, background .15s ease;
+}
+.bbp-btn:hover { background: #FFEFC7; transform: translateY(-1px); }
+.bbp-btn svg { width: 16px; height: 16px; display: block; }
+.bbp-play { width: 40px; height: 40px; background: #D7263D; color: #FFF7E9; box-shadow: 2.5px 2.5px 0 #2B1A12; }
+.bbp-play:hover { background: #B71C31; }
+.bbp-play svg { width: 18px; height: 18px; }
+.bbp-more svg { transition: transform .25s ease; }
+.bbp-more[aria-expanded="true"] svg { transform: rotate(180deg); }
+#bbpPop {
+  position: absolute; right: 0; bottom: calc(100% + 12px); width: 262px;
+  background: #FFFDF6; border: 3px solid #2B1A12; border-radius: 18px;
+  box-shadow: 4px 4px 0 #2B1A12; padding: 12px;
+  display: flex; flex-direction: column; gap: 10px;
+}
+#bbpPop[hidden] { display: none; }
+.bbp-controls { display: flex; align-items: center; gap: 8px; }
+.bbp-chip {
+  width: 34px; height: 34px; position: relative; flex: none;
+  display: inline-flex; align-items: center; justify-content: center; padding: 0;
+  background: #FFF7E9; color: #2B1A12; border: 2.5px solid #2B1A12; border-radius: 10px;
+  cursor: pointer; transition: background .15s ease;
+}
+.bbp-chip svg { width: 16px; height: 16px; display: block; }
+.bbp-chip:hover { background: #FFEFC7; }
+.bbp-chip.active { background: #FFC72C; }
+.bbp-badge {
+  position: absolute; top: -8px; right: -8px; width: 17px; height: 17px;
+  border-radius: 50%; background: #D7263D; color: #FFF7E9; border: 2px solid #2B1A12;
+  font-size: 10px; font-weight: 800; line-height: 13px; text-align: center;
+}
+#bbpVol {
+  flex: 1; min-width: 0; height: 10px; margin: 0;
+  appearance: none; -webkit-appearance: none;
+  border-radius: 999px; background: #F3E3C2; border: 2px solid #2B1A12; cursor: pointer;
+}
+#bbpVol::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 18px; height: 18px; border-radius: 50%;
+  background: #FFC72C; border: 2.5px solid #2B1A12;
+}
+#bbpVol::-moz-range-thumb {
+  width: 13px; height: 13px; border-radius: 50%;
+  background: #FFC72C; border: 2.5px solid #2B1A12;
+}
+.bbp-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+.bbp-list button {
+  display: flex; align-items: center; gap: 8px; width: 100%; text-align: left;
+  background: transparent; border: 2.5px solid transparent; border-radius: 10px;
+  padding: 5px 8px; cursor: pointer; font-family: inherit;
+}
+.bbp-list button:hover { background: #FFF3DC; }
+.bbp-list li.current button { background: #FFC72C; border-color: #2B1A12; }
+.bbp-li-num { font-family: 'Lilita One', cursive; font-size: 12px; color: #C8321F; width: 14px; flex: none; }
+.bbp-li-meta { min-width: 0; line-height: 1.15; }
+.bbp-li-title { display: block; font-weight: 800; font-size: 13px; color: #2B1A12; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bbp-li-by { display: block; font-weight: 600; font-size: 11px; color: #97806D; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* ---- Music player: compact mini-bar (phones) ---- */
+.bbp-mini {
+  display: none; /* phone mode only — player.js adds .bb-mobile */
+  align-items: center; gap: 8px;
+  background: #FFFDF6; border: 2.5px solid #2B1A12; border-radius: 999px;
+  padding: 8px 15px; box-shadow: 3px 3px 0 #2B1A12;
+  font-family: 'Lilita One', cursive; font-size: 13px; letter-spacing: .3px; color: #2B1A12;
+  cursor: pointer;
+}
+.bbp-mini-title { max-width: 132px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bbp-mini-eq { display: flex; align-items: flex-end; gap: 2.5px; height: 13px; flex: none; }
+.bbp-mini-eq span { width: 3.5px; border-radius: 2px; height: 35%; }
+.bbp-mini-eq span:nth-child(1) { background: #D7263D; }
+.bbp-mini-eq span:nth-child(2) { background: #FFC72C; }
+.bbp-mini-eq span:nth-child(3) { background: #D7263D; }
+#bbPlayer.playing .bbp-mini-eq span { animation: bbpEq 1s ease-in-out infinite; }
+#bbPlayer.playing .bbp-mini-eq span:nth-child(2) { animation-delay: .18s; }
+#bbPlayer.playing .bbp-mini-eq span:nth-child(3) { animation-delay: .36s; }
+@keyframes bbpEq { 0%, 100% { height: 35%; } 50% { height: 100%; } }
+.bbp-fold { display: none; }
+
+/* Phone mode: mini bar and full pill swap with an eased grow/shrink
+   anchored to the bottom-right corner (~280ms, opacity + scale) */
+#bbPlayer.bb-mobile .bbp-mini { display: flex; position: absolute; right: 0; bottom: 0; }
+#bbPlayer.bb-mobile .bbp-fold { display: inline-flex; }
+#bbPlayer.bb-mobile .bbp-mini,
+#bbPlayer.bb-mobile .bbp-pill {
+  transition: opacity .28s cubic-bezier(.22, .61, .36, 1),
+    transform .28s cubic-bezier(.22, .61, .36, 1), visibility 0s 0s;
+  transform-origin: bottom right;
+}
+#bbPlayer.bb-mobile.compact .bbp-pill,
+#bbPlayer.bb-mobile:not(.compact) .bbp-mini {
+  opacity: 0; transform: scale(.8) translateY(10px);
+  visibility: hidden; pointer-events: none;
+  transition: opacity .28s cubic-bezier(.22, .61, .36, 1),
+    transform .28s cubic-bezier(.22, .61, .36, 1), visibility 0s .28s;
+}
+#bbPlayer.bb-mobile.compact #bbpPop { display: none; }
+
+/* Hero-aware (phones): while the pinned hero is on screen its swipe caption
+   + progress bar own the viewport bottom — the player steps aside entirely
+   and returns once the visitor scrolls past (class toggled by player.js) */
+#bbPlayer.bb-mobile.bb-hero .bbp-mini,
+#bbPlayer.bb-mobile.bb-hero .bbp-pill {
+  opacity: 0; transform: scale(.8) translateY(14px);
+  visibility: hidden; pointer-events: none;
+  transition: opacity .28s cubic-bezier(.22, .61, .36, 1),
+    transform .28s cubic-bezier(.22, .61, .36, 1), visibility 0s .28s;
+}
+#bbPlayer.bb-mobile.bb-hero #bbpPop { display: none; }
+
+@media (max-width: 480px) {
+  #bbPlayer { right: 10px; bottom: 10px; }
+  #bbpWave { width: 40px; height: 24px; }
+  .bbp-meta { max-width: 84px; }
+  .bbp-btn { width: 31px; height: 31px; }
+  .bbp-play { width: 37px; height: 37px; }
+  .bbp-pill { gap: 6px; padding: 6px 8px 6px 12px; }
+  #bbpPop { width: min(262px, calc(100vw - 20px)); }
+}
+@media (max-width: 360px) {
+  #bbpWave { display: none; }
+}
+/* The hero's bottom-center scroll hint would sit under the floating player on
+   narrow screens; the caption pill already says "scroll/swipe to build", so
+   the hint drops out there instead of colliding */
+@media (max-width: 820px) { #scrollHint { display: none !important; } }
+
+/* ---- Focus visibility for keyboard users ---- */
+a:focus-visible, button:focus-visible, summary:focus-visible {
+  outline: 3px solid #D7263D;
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+/* ---- Touch targets: pad hit areas to ≥44px on touch devices ---- */
+@media (pointer: coarse) {
+  .nav-link, .btn-call, .btn-chunky, .btn-visit-yellow, .btn-visit-ghost,
+  .footer-link, .maps-link { position: relative; }
+  .nav-link::after, .btn-call::after, .btn-chunky::after, .btn-visit-yellow::after,
+  .btn-visit-ghost::after, .footer-link::after, .maps-link::after {
+    content: ''; position: absolute; left: 0; right: 0;
+    top: 50%; height: 44px; min-height: 100%;
+    transform: translateY(-50%);
+  }
+}
+
+/* ---- Reduced motion ---- */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}
+
+/* ---- Hide floaty garnishes on smaller screens ---- */
+@media (max-width: 900px) {
+  #fl1, #fl2, #fl3, #fl4, #fl5, #fl6, #fl7, #fl8 { display: none !important; }
+}
+
+/* Compact wordmark on narrow screens (collapsed bar holds logo + Call us + hamburger) */
+@media (max-width: 520px) {
+  #topNav { gap: 10px !important; }
+  #topNav a:first-child span:first-child {
+    font-size: 18px !important;
+    text-shadow: -1.5px -1.5px 0 #2B1A12, 1.5px -1.5px 0 #2B1A12, -1.5px 1.5px 0 #2B1A12, 1.5px 1.5px 0 #2B1A12, 3px 3px 0 #D7263D !important;
+    white-space: nowrap;
+  }
+  #topNav a:first-child span:last-child { display: none; }
+  .btn-call { font-size: 13px; padding: 6px 12px; }
+}
+
+/* Stacked, centered hero: touch devices (phone + iPad, any orientation) and narrow windows.
+   Side-by-side survives only on hover/fine-pointer viewports wider than 900px. */
+@media (max-width: 900px), ((hover: none) and (pointer: coarse)) {
+  #heroGrid { grid-template-columns: 1fr !important; justify-items: center; }
+  #top { align-items: center !important; text-align: center; }
+  #heroCtas { justify-content: center; }
+  #heroStatus { justify-content: center; }
+  #heroLogo { font-size: min(9vw, 9svh) !important; }
+  #bowlWrap { max-height: min(30svh, 330px) !important; }
+}
+
+/* Mid-size stacked hero: touch devices up to ~1080px tall (iPads either way)
+   get moderately tightened spacing so the stacked layout fits the pin.
+   Phones fall through to the (later, winning) compact block below. */
+@media ((hover: none) and (pointer: coarse)) and (max-height: 1080px) {
+  #heroGrid { gap: 12px !important; padding-top: 72px !important; padding-bottom: 12px !important; }
+  #heroH1 { font-size: clamp(18px, 2vw, 24px) !important; }
+  #heroPara { font-size: 16px !important; }
+  #stageCaption { font-size: 15px !important; }
+  #bowlWrap { max-height: min(26svh, 300px) !important; }
+}
+
+/* Compact hero: stacked / short viewports must fit the pinned viewport height.
+   The touch+max-height arm covers iPads in landscape, where the stacked layout
+   needs compact sizing to fit. */
+@media (max-width: 760px), (max-height: 620px), ((hover: none) and (pointer: coarse)) and (max-height: 850px) {
+  #heroGrid { padding: 58px 16px 6px !important; gap: 10px !important; }
+  #top { gap: 5px !important; }
+  #heroEyebrow { font-size: 11px !important; letter-spacing: 2.5px !important; }
+  #heroLogo { font-size: min(10vw, 6.4svh) !important; text-shadow: -2px -2px 0 #2B1A12, 2px -2px 0 #2B1A12, -2px 2px 0 #2B1A12, 2px 2px 0 #2B1A12, 4px 5px 0 #D7263D !important; }
+  #heroBadge { font-size: 12px !important; letter-spacing: 6px !important; padding: 2px 4px 2px 10px !important; }
+  #heroH1 { font-size: 16px !important; max-width: 40ch !important; margin: 2px 0 0 !important; }
+  #heroPara { font-size: 15px !important; line-height: 1.45 !important; }
+  #heroStatus { font-size: 12px !important; padding: 3px 12px !important; }
+  #heroCtas { gap: 8px !important; }
+  #heroCtas a { font-size: 14px !important; padding: 7px 14px !important; border-radius: 10px !important; }
+  #bowlWrap { max-height: min(27svh, 290px) !important; }
+  #stageCaption { font-size: 13px !important; padding: 3px 14px !important; margin-top: 2px !important; }
+  #buildBar { margin-top: 6px !important; }
+  #kanjiBackdrop { font-size: 150px !important; }
+}
+
+/* Tall phones have vertical headroom: restore readable body copy in the pinned hero
+   and give the caption pill / progress bar clear separation */
+@media (max-width: 760px) and (min-height: 700px) {
+  #heroPara { font-size: 16px !important; line-height: 1.5 !important; }
+  #heroH1 { font-size: 18px !important; }
+  #bowlWrap { max-height: min(32svh, 320px) !important; }
+  #stageCaption { margin-top: 8px !important; }
+  #buildBar { margin-top: 14px !important; }
+}
+
+/* Very short viewports (phone landscape): the stacked column only fits if the
+   lede + status badge drop out and everything else tightens up */
+@media (max-height: 460px) {
+  #heroPara { display: none !important; }
+  #heroStatus { display: none !important; }
+  #kanjiBackdrop { display: none !important; }
+  #heroGrid { padding-top: 52px !important; padding-bottom: 4px !important; gap: 6px !important; }
+  #top { gap: 4px !important; }
+  #heroLogo { font-size: min(8vw, 5.5svh) !important; }
+  #heroBadge { font-size: 11px !important; letter-spacing: 5px !important; padding: 1px 3px 1px 8px !important; }
+  #heroH1 { font-size: 14px !important; margin: 0 !important; }
+  #heroCtas a { font-size: 12px !important; padding: 5px 10px !important; }
+  #bowlWrap { max-height: 24svh !important; }
+  #stageCaption { font-size: 12px !important; padding: 2px 10px !important; margin-top: 0 !important; }
+  #buildBar { margin-top: 2px !important; }
+}

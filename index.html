@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bambam Diner — Ramen House · San Marcelino, Zambales</title>
+  <meta name="description" content="Bambam Diner — rich, bold, authentic ramen slow-boiled 13–15 hours, plus Korean bingsu. National Highway, Brgy. Lapaz, San Marcelino, Zambales.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍜</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <!-- Fonts CSS loads async (non-render-blocking); font-display: swap is in the
+       css2 response. __bbFontCss tells the loader when fonts.ready is meaningful. -->
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400..800&family=Lilita+One&display=swap" onload="this.onload=null;this.rel='stylesheet';window.__bbFontCss=1" onerror="window.__bbFontCss=1">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400..800&family=Lilita+One&display=swap"></noscript>
+  <link rel="stylesheet" href="css/style.css">
+  <!-- Licensed wordmark font, self-hosted; tiny (7KB) so preloading avoids a
+       visible swap on the loader/hero wordmark. crossorigin is required on
+       font preloads even same-origin, else the fetch is discarded. -->
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/GAMERIA.woff2" crossorigin>
+  <style>
+    /* Loading screen — critical CSS, inline so it paints before external assets */
+    #bbLoader { position: fixed; inset: 0; z-index: 200; background: #FFF7E9; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; transition: opacity .45s ease; font-family: 'Lilita One', 'Trebuchet MS', cursive; }
+    #bbLoader.done { opacity: 0; pointer-events: none; }
+    .bbl-logo { font-family: 'Gameria', 'Lilita One', 'Trebuchet MS', cursive; font-size: clamp(44px, 9vw, 72px); color: #FFC72C; line-height: 1; text-shadow: -3px -3px 0 #2B1A12, 3px -3px 0 #2B1A12, -3px 3px 0 #2B1A12, 3px 3px 0 #2B1A12, 6px 7px 0 #D7263D; }
+    .bbl-badge { font-size: 15px; letter-spacing: 9px; color: #2B1A12; background: #FFC72C; border: 3px solid #2B1A12; border-radius: 8px; padding: 3px 4px 3px 13px; box-shadow: 3px 3px 0 #2B1A12; }
+    .bbl-dots { display: flex; gap: 9px; margin-top: 10px; }
+    .bbl-dots span { width: 13px; height: 13px; border-radius: 50%; border: 2.5px solid #2B1A12; animation: bblBob 1s ease-in-out infinite; }
+    .bbl-dots span:nth-child(1) { background: #D7263D; }
+    .bbl-dots span:nth-child(2) { background: #FFC72C; animation-delay: .15s; }
+    .bbl-dots span:nth-child(3) { background: #4E9C46; animation-delay: .3s; }
+    @keyframes bblBob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-9px); } }
+    .bbl-music { margin-top: 14px; font-family: inherit; font-size: 15px; letter-spacing: .5px; color: #2B1A12; background: #FFFDF6; border: 3px solid #2B1A12; border-radius: 999px; padding: 9px 20px; box-shadow: 3px 3px 0 #2B1A12; cursor: pointer; transition: transform .12s ease, box-shadow .12s ease, background .2s ease; }
+    .bbl-music:hover { transform: translate(1px, 1px); box-shadow: 2px 2px 0 #2B1A12; }
+    .bbl-music.on { background: #FFC72C; cursor: default; }
+  </style>
+</head>
+<body>
+
+<div id="bbLoader">
+  <div class="bbl-logo" aria-hidden="true">BAM BAM</div>
+  <div class="bbl-badge" aria-hidden="true">DINER</div>
+  <div class="bbl-dots" aria-hidden="true"><span></span><span></span><span></span></div>
+  <button id="bbLoaderMusic" class="bbl-music" type="button">🔊 Click to enable music</button>
+</div>
+<noscript><style>#bbLoader { display: none !important; }</style></noscript>
+<script>
+/* Loader bootstrap — inline so the 4.5s cap starts at parse time,
+   not after the (much larger) script bundles finish downloading.
+   Reveal waits for BOTH the page (load + fonts) AND the hero being
+   render-ready (main.js calls __bbHeroReady after the 3D bowl — or its
+   SVG fallback — has painted), so no placeholder swap is ever visible. */
+(function () {
+  var loader = document.getElementById('bbLoader');
+  document.documentElement.style.overflow = 'hidden';
+  var done = false, pageReady = false, heroReady = false;
+  function reveal() {
+    if (done) return;
+    done = true;
+    document.documentElement.style.overflow = '';
+    loader.classList.add('done');
+    window.__bbRevealed = true;
+    document.dispatchEvent(new Event('bb:reveal'));
+    setTimeout(function () { loader.style.display = 'none'; }, 600);
+  }
+  function check() { if (pageReady && heroReady) reveal(); }
+  window.__bbHeroReady = function () { heroReady = true; check(); };
+  /* Page-ready no longer waits for window 'load' — that would gate the
+     reveal on the (now deferred) three.js download. DOM + fonts is enough;
+     hero readiness is signalled separately by main.js. */
+  function whenFonts() {
+    var fonts = (document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve();
+    function ok() { pageReady = true; check(); }
+    fonts.then(ok, ok);
+  }
+  function afterDom() {
+    // Give the async Google Fonts CSS a moment to apply, otherwise
+    // fonts.ready resolves before the display fonts are even requested
+    var t0 = Date.now();
+    (function poll() {
+      if (window.__bbFontCss || Date.now() - t0 > 2000) whenFonts();
+      else setTimeout(poll, 60);
+    })();
+  }
+  if (document.readyState !== 'loading') afterDom();
+  else document.addEventListener('DOMContentLoaded', afterDom);
+  setTimeout(reveal, 4500);
+
+  /* Enable-music bootstrap — inline (not in player.js) because autoplay
+     policies (Safari strictest) require audio.play() to be called
+     synchronously INSIDE the click gesture, and this button is clickable
+     while the big script bundles may still be downloading. player.js
+     adopts window.__bbMusic.audio and takes over from here. */
+  var music = window.__bbMusic = {
+    tracks: [
+      'As Daylight Fades by Sulu',
+      'beneath the sakura by baegel',
+      'Slow Season by Loyae',
+      'Smooth Rift by Mhern',
+      'Tidal Waves by Auxjack'
+    ],
+    index: 0,
+    audio: null,
+    wanted: false
+  };
+  music.index = Math.floor(Math.random() * music.tracks.length);
+  var mbtn = document.getElementById('bbLoaderMusic');
+  mbtn.addEventListener('click', function () {
+    if (music.wanted) return;
+    music.wanted = true;
+    if (!music.audio) {
+      music.audio = new Audio('audio/' + encodeURIComponent(music.tracks[music.index]) + '.mp3');
+      music.audio.volume = 0.7;
+    }
+    var p = music.audio.play();
+    if (p && p.catch) p.catch(function () {});
+    mbtn.classList.add('on');
+    mbtn.textContent = '🎵 Music on — enjoy!';
+    document.dispatchEvent(new Event('bb:musicwanted'));
+  });
+})();
+</script>
+
+<div style="font-family: 'Baloo 2', 'Trebuchet MS', sans-serif; background: #FFF7E9; color: #2B1A12; overflow-x: clip;">
+
+  <!-- ============ NAV ============ -->
+  <nav id="topNav" style="position: fixed; top: 0; left: 0; right: 0; z-index: 60; display: flex; align-items: center; gap: 14px; padding: 10px clamp(14px, 4vw, 36px); background: rgba(255,247,233,.94); backdrop-filter: blur(8px); border-bottom: 3px solid #2B1A12; transition: box-shadow .4s ease;">
+    <a href="#top" style="text-decoration: none; display: flex; align-items: baseline; gap: 8px;">
+      <span style="font-family: 'Gameria', 'Lilita One', cursive; font-size: 24px; color: #FFC72C; text-shadow: -2px -2px 0 #2B1A12, 2px -2px 0 #2B1A12, -2px 2px 0 #2B1A12, 2px 2px 0 #2B1A12, 4px 4px 0 #D7263D;">BAM BAM</span>
+      <span style="font-family: 'Lilita One', cursive; font-size: 13px; letter-spacing: 3px; color: #2B1A12;">DINER</span>
+    </a>
+    <div style="flex: 1;"></div>
+    <div id="navLinks" class="nav-links">
+      <a class="nav-link" href="#menu">Menu</a>
+      <a class="nav-link" href="#gallery">Photos</a>
+      <a class="nav-link" href="#visit">Visit</a>
+      <a class="nav-link" href="about.html">About</a>
+      <a class="nav-link" href="faq.html">FAQ</a>
+    </div>
+    <a class="btn-call" href="tel:+639544073640">Call us</a>
+    <button id="navToggle" class="nav-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks"><span></span><span></span><span></span></button>
+  </nav>
+
+  <!-- ============ HERO: scroll-driven ramen build ============ -->
+  <div id="heroTrack" style="height: 420vh; position: relative;">
+    <div id="heroSticky" style="position: sticky; top: 0; height: 100svh; overflow: hidden; display: flex; background: #FFF7E9;">
+
+      <!-- big faint kanji backdrop -->
+      <div id="kanjiBackdrop" style="position: absolute; right: clamp(-40px, 2vw, 60px); top: 50%; transform: translateY(-54%); font-weight: 800; font-size: clamp(180px, 34vw, 420px); line-height: .9; color: rgba(215, 38, 61, .07); pointer-events: none; user-select: none;">拉面</div>
+
+      <!-- lanterns -->
+      <div style="position: absolute; top: 0; left: clamp(4px, 1.2vw, 30px); pointer-events: none; z-index: 0; transform: scale(.62); transform-origin: top left;">
+        <div style="width: 3px; height: 44px; background: #2B1A12; margin: 0 auto;"></div>
+        <div style="animation: bbSway 4.4s ease-in-out infinite; transform-origin: top center;">
+          <div style="width: 30px; height: 9px; background: #2B1A12; border-radius: 3px; margin: 0 auto;"></div>
+          <div style="width: 72px; height: 86px; border: 3px solid #2B1A12; border-radius: 50% / 44%; background: repeating-linear-gradient(90deg, #E03A2F 0 12px, #C92E24 12px 16px); display: flex; align-items: center; justify-content: center;">
+            <span style="color: #FFC72C; font-weight: 800; font-size: 26px;">拉</span>
+          </div>
+          <div style="width: 30px; height: 9px; background: #2B1A12; border-radius: 3px; margin: 0 auto;"></div>
+          <div style="width: 3px; height: 20px; background: #2B1A12; margin: 0 auto;"></div>
+          <div style="width: 9px; height: 9px; background: #FFC72C; border: 2px solid #2B1A12; border-radius: 50%; margin: 0 auto;"></div>
+        </div>
+      </div>
+      <div style="position: absolute; top: 0; right: clamp(8px, 8vw, 150px); pointer-events: none; z-index: 0; transform: scale(.72); transform-origin: top center;">
+        <div style="width: 3px; height: 70px; background: #2B1A12; margin: 0 auto;"></div>
+        <div style="animation: bbSway 5.1s ease-in-out infinite .8s; transform-origin: top center;">
+          <div style="width: 30px; height: 9px; background: #2B1A12; border-radius: 3px; margin: 0 auto;"></div>
+          <div style="width: 72px; height: 86px; border: 3px solid #2B1A12; border-radius: 50% / 44%; background: repeating-linear-gradient(90deg, #E03A2F 0 12px, #C92E24 12px 16px); display: flex; align-items: center; justify-content: center;">
+            <span style="color: #FFC72C; font-weight: 800; font-size: 26px;">面</span>
+          </div>
+          <div style="width: 30px; height: 9px; background: #2B1A12; border-radius: 3px; margin: 0 auto;"></div>
+          <div style="width: 3px; height: 20px; background: #2B1A12; margin: 0 auto;"></div>
+          <div style="width: 9px; height: 9px; background: #FFC72C; border: 2px solid #2B1A12; border-radius: 50%; margin: 0 auto;"></div>
+        </div>
+      </div>
+
+      <div id="heroGrid" style="position: relative; z-index: 1; width: 100%; max-width: 1180px; margin: auto; padding: 96px clamp(16px, 4vw, 40px) 40px; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: clamp(10px, 3vw, 40px); align-items: center;">
+
+        <!-- Left: identity -->
+        <div id="top" style="display: flex; flex-direction: column; gap: clamp(8px, 1.6vh, 16px); align-items: flex-start;">
+          <div id="heroEyebrow" style="font-weight: 800; letter-spacing: 4px; font-size: 13px; color: #C8321F; text-transform: uppercase;">拉面 · Ramen House · Zambales</div>
+          <div id="heroLogo" style="font-family: 'Gameria', 'Lilita One', cursive; font-size: clamp(56px, 9vw, 110px); line-height: .92; color: #FFC72C; text-shadow: -3px -3px 0 #2B1A12, 3px -3px 0 #2B1A12, -3px 3px 0 #2B1A12, 3px 3px 0 #2B1A12, 7px 8px 0 #D7263D; display: flex; align-items: flex-end; gap: .08em;">
+            <span>BAM<br>BAM</span>
+            <!-- Cat mascot from the real Bambam Diner logo (assets/images/bambamdinerpfp.png),
+                 redrawn as vector to match the site's linework. Static part of the
+                 logo lockup — not tied to the bowl-build scroll animation. -->
+            <svg id="heroLogoCat" viewBox="0 0 132 116" aria-hidden="true" style="width: .84em; height: auto; flex: none; margin-bottom: .03em; text-shadow: none;">
+              <path d="M38 21 L30 3 L52 12 Z" fill="#FFFFFF" stroke="#2B1A12" stroke-width="5" stroke-linejoin="round"></path>
+              <path d="M78 21 L86 3 L64 12 Z" fill="#FFFFFF" stroke="#2B1A12" stroke-width="5" stroke-linejoin="round"></path>
+              <ellipse cx="62" cy="80" rx="35" ry="28" fill="#FFFFFF" stroke="#2B1A12" stroke-width="5"></ellipse>
+              <ellipse cx="42" cy="103" rx="12" ry="8.5" fill="#FFFFFF" stroke="#2B1A12" stroke-width="5"></ellipse>
+              <ellipse cx="86" cy="103" rx="12" ry="8.5" fill="#FFFFFF" stroke="#2B1A12" stroke-width="5"></ellipse>
+              <ellipse cx="58" cy="36" rx="31" ry="27" fill="#FFFFFF" stroke="#2B1A12" stroke-width="5"></ellipse>
+              <ellipse cx="60" cy="58" rx="21" ry="12" fill="#FFFFFF"></ellipse>
+              <rect x="18" y="72" width="27" height="25" rx="5" fill="#D7263D" stroke="#2B1A12" stroke-width="5"></rect>
+              <path d="M18 78 q-11 1 -9 10 q2 8 10 7" fill="none" stroke="#2B1A12" stroke-width="4.5"></path>
+              <text x="31.5" y="84" text-anchor="middle" font-family="'Baloo 2', 'Trebuchet MS', sans-serif" font-weight="800" font-size="8.5" fill="#FFF7E9" letter-spacing="1">XO</text>
+              <text x="31.5" y="93.5" text-anchor="middle" font-family="'Baloo 2', 'Trebuchet MS', sans-serif" font-weight="800" font-size="8.5" fill="#FFF7E9" letter-spacing="1">XO</text>
+              <ellipse cx="45" cy="72" rx="7" ry="5.5" fill="#FFFFFF" stroke="#2B1A12" stroke-width="4"></ellipse>
+              <path d="M82 68 Q94 61 92 48" fill="none" stroke="#2B1A12" stroke-width="4.5" stroke-linecap="round"></path>
+              <ellipse cx="90" cy="46" rx="8" ry="6.5" fill="#FFFFFF" stroke="#2B1A12" stroke-width="4"></ellipse>
+              <ellipse cx="47" cy="34" rx="3.2" ry="4.2" fill="#2B1A12"></ellipse>
+              <ellipse cx="69" cy="34" rx="3.2" ry="4.2" fill="#2B1A12"></ellipse>
+              <path d="M52 43 q3.5 4.5 6.5 0 q3.5 4.5 6.5 0" fill="none" stroke="#2B1A12" stroke-width="3" stroke-linecap="round"></path>
+              <path d="M89 29 l16 -3 M90 35 l16 1 M89 41 l14 5" fill="none" stroke="#2B1A12" stroke-width="2.5" stroke-linecap="round"></path>
+              <path d="M27 29 l-14 -3 M26 35 l-14 1" fill="none" stroke="#2B1A12" stroke-width="2.5" stroke-linecap="round"></path>
+            </svg>
+          </div>
+          <div id="heroBadge" style="font-family: 'Lilita One', cursive; font-size: clamp(15px, 2vw, 20px); letter-spacing: 10px; color: #2B1A12; background: #FFC72C; border: 3px solid #2B1A12; border-radius: 8px; padding: 3px 6px 3px 16px; box-shadow: 3px 3px 0 #2B1A12;">DINER</div>
+          <h1 id="heroH1" style="margin: 6px 0 0; font-family: 'Lilita One', cursive; font-weight: 400; font-size: clamp(20px, 2.6vw, 30px); line-height: 1.2; color: #2B1A12; max-width: 26ch;">Rich, bold, authentic ramen — slow-boiled 13–15 hours.</h1>
+          <p id="heroPara" style="margin: 0; font-size: clamp(15px, 1.6vw, 17px); line-height: 1.5; max-width: 44ch; color: #4A362B;">Creamy broth simmered 13–15 hours, served with marinated melt-in-your-mouth chashu or spicy ground pork. And for dessert? Korean bingsu — shaved snow, piled high.</p>
+          <div id="heroStatus" style="display: flex; align-items: center; gap: 8px; background: #FFFDF6; border: 3px solid #2B1A12; border-radius: 999px; padding: 5px 14px; font-weight: 800; font-size: 14px; box-shadow: 3px 3px 0 #2B1A12;">
+            <span id="statusDot" style="width: 11px; height: 11px; border-radius: 50%; background: #D7263D; border: 2px solid #2B1A12; display: inline-block; animation: bbPulse 2.6s ease-in-out infinite;"></span>
+            <span id="statusText">Tue–Sun · 12:00 PM – 9:00 PM</span>
+          </div>
+          <div id="heroCtas" style="display: flex; flex-wrap: wrap; gap: 12px; margin-top: 4px;">
+            <a class="btn-chunky" href="tel:+639544073640" style="background: #D7263D; color: #FFF7E9;">Call 0954 407 3640</a>
+            <a class="btn-chunky" href="#visit" style="background: #FFC72C; color: #2B1A12;">Visit us</a>
+          </div>
+        </div>
+
+        <!-- Right: the bowl -->
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
+          <div id="bowlWrap" style="width: min(92vw, 540px); aspect-ratio: 480 / 460; max-height: 52svh; margin: 0 auto; position: relative;">
+            <canvas id="bowl3d" aria-label="Interactive 3D ramen bowl — builds as you scroll, drag to spin" style="position: absolute; inset: 0; width: 100%; height: 100%; display: none; cursor: grab; touch-action: pan-y;"></canvas>
+            <svg id="bowlFallback" viewBox="0 0 480 460" style="display: block; width: 100%; height: 100%;" role="img" aria-label="Cartoon ramen bowl that builds up as you scroll">
+              <defs>
+                <clipPath id="bbBrothClip"><ellipse cx="240" cy="228" rx="140" ry="29"></ellipse></clipPath>
+              </defs>
+
+              <!-- steam -->
+              <g style="opacity: calc(var(--steam, 0));">
+                <path d="M195 150 C180 122 210 104 196 74 C190 60 198 50 206 42" fill="none" stroke="#C9B8A3" stroke-width="9" stroke-linecap="round" style="animation: bbSteam 2.8s ease-in-out infinite;"></path>
+                <path d="M244 144 C230 116 260 98 246 68 C240 54 248 44 256 36" fill="none" stroke="#C9B8A3" stroke-width="10" stroke-linecap="round" style="animation: bbSteam 3.2s ease-in-out infinite .9s;"></path>
+                <path d="M292 152 C278 126 306 108 292 80 C286 66 294 56 302 48" fill="none" stroke="#C9B8A3" stroke-width="8" stroke-linecap="round" style="animation: bbSteam 2.6s ease-in-out infinite 1.7s;"></path>
+              </g>
+
+              <!-- broth pour stream -->
+              <g style="opacity: calc(var(--pour, 0));">
+                <rect x="227" y="4" width="26" height="216" rx="13" fill="#EEB64B" stroke="#2B1A12" stroke-width="5"></rect>
+                <ellipse cx="240" cy="224" rx="34" ry="10" fill="#F6CE74" stroke="#2B1A12" stroke-width="4"></ellipse>
+              </g>
+
+              <!-- bowl -->
+              <rect x="194" y="380" width="92" height="28" rx="10" fill="#FFFDF6" stroke="#2B1A12" stroke-width="7"></rect>
+              <path d="M66 232 C70 322 132 388 240 388 C348 388 410 322 414 232 Z" fill="#FFFDF6" stroke="#2B1A12" stroke-width="8" stroke-linejoin="round"></path>
+              <text x="240" y="342" text-anchor="middle" font-family="Gameria, Lilita One, cursive" font-size="34" fill="#FFC72C" stroke="#2B1A12" stroke-width="1.5" style="letter-spacing: 2px;">BAM BAM</text>
+              <circle cx="130" cy="322" r="8" fill="#D7263D" stroke="#2B1A12" stroke-width="3"></circle>
+              <circle cx="350" cy="322" r="8" fill="#D7263D" stroke="#2B1A12" stroke-width="3"></circle>
+              <ellipse cx="240" cy="230" rx="176" ry="46" fill="#D7263D" stroke="#2B1A12" stroke-width="8"></ellipse>
+              <ellipse cx="240" cy="228" rx="150" ry="34" fill="#F3E3C2" stroke="#2B1A12" stroke-width="5"></ellipse>
+
+              <!-- broth -->
+              <ellipse cx="240" cy="228" rx="142" ry="30" fill="#EEB64B" stroke="#D99A2B" stroke-width="4" style="transform-box: fill-box; transform-origin: center; transform: scale(calc(var(--broth, 0))); opacity: calc(var(--broth, 0) * 6);"></ellipse>
+
+              <!-- noodles -->
+              <g clip-path="url(#bbBrothClip)" style="transform-box: fill-box; transform-origin: center; transform: rotate(calc((1 - var(--noodles, 0)) * 150deg)) scale(calc(var(--noodles, 0))); opacity: calc(var(--noodles, 0) * 4);">
+                <path d="M108 216 q22 -16 44 0 t44 0 t44 0 t44 0 t44 0" fill="none" stroke="#F6D77B" stroke-width="9" stroke-linecap="round"></path>
+                <path d="M100 230 q22 -14 44 0 t44 0 t44 0 t44 0 t44 0" fill="none" stroke="#F1CC66" stroke-width="9" stroke-linecap="round"></path>
+                <path d="M112 243 q22 -13 44 0 t44 0 t44 0 t44 0 t44 0" fill="none" stroke="#F6D77B" stroke-width="9" stroke-linecap="round"></path>
+              </g>
+
+              <!-- nori -->
+              <g style="transform: translateY(calc((1 - var(--nori, 0)) * -340px)); opacity: calc(var(--nori, 0) * 4);">
+                <g transform="translate(146, 216) rotate(-9)">
+                  <rect x="-30" y="-84" width="60" height="92" rx="7" fill="#2E4A38" stroke="#2B1A12" stroke-width="6"></rect>
+                  <rect x="-17" y="-70" width="34" height="64" rx="5" fill="none" stroke="#4C7A57" stroke-width="4"></rect>
+                </g>
+              </g>
+
+              <!-- chashu -->
+              <g style="transform: translateY(calc((1 - var(--chashu, 0)) * -320px));">
+                <ellipse cx="205" cy="226" rx="38" ry="27" fill="#E7B583" stroke="#2B1A12" stroke-width="6"></ellipse>
+                <ellipse cx="205" cy="226" rx="24" ry="16" fill="#F6DCB4" stroke="#C98A54" stroke-width="4"></ellipse>
+                <circle cx="205" cy="226" r="4.5" fill="#C98A54"></circle>
+              </g>
+              <g style="transform: translateY(calc((1 - var(--chashu, 0)) * -260px)); opacity: calc(var(--chashu, 0) * 4);">
+                <ellipse cx="262" cy="245" rx="32" ry="22" fill="#E0A96F" stroke="#2B1A12" stroke-width="6"></ellipse>
+                <ellipse cx="262" cy="245" rx="19" ry="12" fill="#F2D3A6" stroke="#C98A54" stroke-width="4"></ellipse>
+                <circle cx="262" cy="245" r="4" fill="#C98A54"></circle>
+              </g>
+
+              <!-- eggs -->
+              <g style="transform: translateY(calc((1 - var(--egg, 0)) * -310px)); opacity: calc(var(--egg, 0) * 4);">
+                <ellipse cx="318" cy="220" rx="31" ry="22" fill="#FFFDF3" stroke="#2B1A12" stroke-width="6"></ellipse>
+                <ellipse cx="318" cy="220" rx="13" ry="9.5" fill="#F2932F" stroke="#D97614" stroke-width="3"></ellipse>
+              </g>
+              <g style="transform: translateY(calc((1 - var(--egg, 0)) * -240px)); opacity: calc(var(--egg, 0) * 4);">
+                <ellipse cx="337" cy="248" rx="25" ry="18" fill="#FFFDF3" stroke="#2B1A12" stroke-width="6"></ellipse>
+                <ellipse cx="337" cy="248" rx="10.5" ry="8" fill="#F2932F" stroke="#D97614" stroke-width="3"></ellipse>
+              </g>
+
+              <!-- chopsticks -->
+              <g style="transform: translateY(calc((1 - var(--chops, 0)) * -300px)); opacity: calc(var(--chops, 0) * 4);">
+                <rect x="58" y="176" width="368" height="11" rx="5.5" fill="#D9A05B" stroke="#2B1A12" stroke-width="4" transform="rotate(-4 240 182)"></rect>
+                <rect x="66" y="194" width="368" height="11" rx="5.5" fill="#C98F4B" stroke="#2B1A12" stroke-width="4" transform="rotate(-2 240 199)"></rect>
+              </g>
+
+              <!-- spring onions -->
+              <g style="transform: translateY(calc((1 - var(--onion, 0)) * -220px)); opacity: calc(var(--onion, 0) * 3);">
+                <circle cx="168" cy="248" r="5" fill="#4E9C46" stroke="#2B1A12" stroke-width="2.5"></circle>
+                <circle cx="238" cy="212" r="5.5" fill="#5CAD52" stroke="#2B1A12" stroke-width="2.5"></circle>
+                <circle cx="292" cy="230" r="4.5" fill="#4E9C46" stroke="#2B1A12" stroke-width="2.5"></circle>
+              </g>
+              <g style="transform: translateY(calc((1 - var(--onion, 0)) * -290px)); opacity: calc(var(--onion, 0) * 3 - .5);">
+                <circle cx="205" cy="256" r="4.5" fill="#5CAD52" stroke="#2B1A12" stroke-width="2.5"></circle>
+                <circle cx="265" cy="218" r="5" fill="#4E9C46" stroke="#2B1A12" stroke-width="2.5"></circle>
+                <circle cx="316" cy="250" r="4.5" fill="#5CAD52" stroke="#2B1A12" stroke-width="2.5"></circle>
+              </g>
+              <g style="transform: translateY(calc((1 - var(--onion, 0)) * -360px)); opacity: calc(var(--onion, 0) * 3 - 1);">
+                <circle cx="150" cy="228" r="4.5" fill="#5CAD52" stroke="#2B1A12" stroke-width="2.5"></circle>
+                <circle cx="228" cy="240" r="4" fill="#4E9C46" stroke="#2B1A12" stroke-width="2.5"></circle>
+                <circle cx="352" cy="228" r="4.5" fill="#4E9C46" stroke="#2B1A12" stroke-width="2.5"></circle>
+              </g>
+            </svg>
+
+          </div>
+
+          <div id="stageCaption" style="font-family: 'Lilita One', cursive; font-size: clamp(15px, 1.8vw, 19px); color: #2B1A12; background: #FFFDF6; border: 3px solid #2B1A12; border-radius: 999px; padding: 6px 20px; box-shadow: 3px 3px 0 #2B1A12; text-align: center;">scroll to build your bowl</div>
+          <div id="buildBar" style="width: 180px; height: 8px; border: 2.5px solid #2B1A12; border-radius: 999px; background: #FFFDF6; overflow: hidden;">
+            <div style="height: 100%; width: calc(var(--p, 0) * 100%); background: #D7263D;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- scroll hint -->
+      <div id="scrollHint" style="position: absolute; bottom: 14px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 2px; opacity: calc(1 - var(--p, 0) * 12); pointer-events: none;">
+        <span id="scrollHintWord" style="font-weight: 800; font-size: 12px; letter-spacing: 3px; color: #4A362B;">SCROLL</span>
+        <span style="animation: bbBob 1.4s ease-in-out infinite; font-size: 18px; color: #D7263D;">▼</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ NOREN DIVIDER ============ -->
+  <div style="background: #FFF7E9; position: relative; z-index: 2;">
+    <div style="height: 14px; background: #2B1A12;"></div>
+    <div style="display: flex; gap: 10px; padding: 0 clamp(10px, 3vw, 40px); margin-top: -3px;">
+      <div style="flex: 1; height: 74px; background: #D7263D; border: 3px solid #2B1A12; border-top: none; border-radius: 0 0 14px 14px;"></div>
+      <div style="flex: 1; height: 88px; background: #D7263D; border: 3px solid #2B1A12; border-top: none; border-radius: 0 0 14px 14px; display: flex; align-items: center; justify-content: center; color: #FFC72C; font-weight: 800; font-size: 30px;">拉</div>
+      <div style="flex: 1; height: 80px; background: #D7263D; border: 3px solid #2B1A12; border-top: none; border-radius: 0 0 14px 14px; display: flex; align-items: center; justify-content: center;"><span style="width: 14px; height: 14px; background: #FFC72C; border: 3px solid #2B1A12; border-radius: 50%;"></span></div>
+      <div style="flex: 1; height: 88px; background: #D7263D; border: 3px solid #2B1A12; border-top: none; border-radius: 0 0 14px 14px; display: flex; align-items: center; justify-content: center; color: #FFC72C; font-weight: 800; font-size: 30px;">面</div>
+      <div style="flex: 1; height: 74px; background: #D7263D; border: 3px solid #2B1A12; border-top: none; border-radius: 0 0 14px 14px;"></div>
+    </div>
+  </div>
+
+  <!-- ============ MENU ============ -->
+  <section id="menu" style="position: relative; z-index: 2; background: linear-gradient(172deg, #FFF7E9 0%, #FFEFC7 42%, #FFE8B3 100%); border-top: 4px solid #2B1A12; border-bottom: 4px solid #2B1A12; padding: clamp(84px, 11vw, 150px) clamp(16px, 4vw, 40px);">
+    <div id="fl3" aria-hidden="true" style="position: absolute; top: 70px; left: 3%; z-index: -1; opacity: .55; transform: rotate(-22deg); pointer-events: none;">
+      <div style="animation: bbFloat 6.2s ease-in-out infinite .6s;">
+        <svg viewBox="0 0 64 40" style="width: 56px; height: 35px; display: block;"><rect x="12" y="12" width="46" height="17" rx="8.5" fill="#D7263D" stroke="#2B1A12" stroke-width="4"></rect><rect x="4" y="14" width="14" height="12" rx="5" fill="#4E9C46" stroke="#2B1A12" stroke-width="4"></rect></svg>
+      </div>
+    </div>
+    <div id="fl4" aria-hidden="true" style="position: absolute; bottom: 60px; right: 4%; z-index: -1; opacity: .45; transform: rotate(9deg); pointer-events: none;">
+      <div style="animation: bbFloat 7.4s ease-in-out infinite 1.8s;">
+        <svg viewBox="0 0 48 56" style="width: 40px; height: 47px; display: block;"><rect x="6" y="5" width="36" height="46" rx="6" fill="#2E4A38" stroke="#2B1A12" stroke-width="5"></rect><rect x="15" y="14" width="18" height="28" rx="4" fill="none" stroke="#4C7A57" stroke-width="3.5"></rect></svg>
+      </div>
+    </div>
+    <div style="max-width: 1080px; margin: 0 auto; display: flex; flex-direction: column; gap: clamp(36px, 5vw, 60px);">
+      <div data-reveal="1" style="text-align: center;">
+        <div style="font-weight: 800; letter-spacing: 4px; font-size: 13px; color: #C8321F; text-transform: uppercase;">メニュー · The good stuff</div>
+        <h2 style="margin: 8px 0 0; font-family: 'Lilita One', cursive; font-weight: 400; font-size: clamp(34px, 5vw, 54px); color: #FFC72C; text-shadow: -2.5px -2.5px 0 #2B1A12, 2.5px -2.5px 0 #2B1A12, -2.5px 2.5px 0 #2B1A12, 2.5px 2.5px 0 #2B1A12, 5px 6px 0 #D7263D;">THE MENU</h2>
+        <div style="display: flex; justify-content: center; align-items: center; gap: 6px; margin-top: 16px;"><span style="width: 42px; height: 6px; border-radius: 999px; background: #D7263D;"></span><span style="width: 12px; height: 6px; border-radius: 999px; background: #2B1A12;"></span></div>
+      </div>
+
+      <!-- Ramen -->
+      <div data-reveal="1" class="menu-card" style="padding: clamp(20px, 3.5vw, 36px);">
+        <div style="display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px 18px; margin-bottom: 18px;">
+          <h3 style="margin: 0; font-family: 'Lilita One', cursive; font-weight: 400; font-size: clamp(26px, 3.4vw, 36px); color: #D7263D;">RAMEN <span style="font-size: .7em; color: #2B1A12;">拉面</span></h3>
+          <div style="font-weight: 800; font-size: 14px; letter-spacing: 2px; color: #4A362B;">RICH <span style="color: #D7263D;">|</span> BOLD <span style="color: #D7263D;">|</span> AUTHENTIC</div>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px 36px; font-size: clamp(16px, 1.8vw, 18px); font-weight: 700;">
+          <div style="display: flex; align-items: baseline; gap: 8px;"><span>Shoyu Ramen</span><span style="flex: 1; border-bottom: 3px dotted #C9B8A3;"></span><span style="font-family: 'Lilita One', cursive; color: #D7263D;">₱200</span></div>
+          <div style="display: flex; align-items: baseline; gap: 8px;"><span>Miso Tonkotsu</span><span style="flex: 1; border-bottom: 3px dotted #C9B8A3;"></span><span style="font-family: 'Lilita One', cursive; color: #D7263D;">₱200</span></div>
+          <div style="display: flex; align-items: baseline; gap: 8px;"><span>Black Garlic Tonkotsu</span><span style="flex: 1; border-bottom: 3px dotted #C9B8A3;"></span><span style="font-family: 'Lilita One', cursive; color: #D7263D;">₱180</span></div>
+          <div style="display: flex; align-items: baseline; gap: 8px;"><span>Tantanmen</span><span style="flex: 1; border-bottom: 3px dotted #C9B8A3;"></span><span style="font-family: 'Lilita One', cursive; color: #D7263D;">₱250</span></div>
+          <div style="display: flex; align-items: baseline; gap: 8px;"><span>Kimchi Ramen</span><span style="flex: 1; border-bottom: 3px dotted #C9B8A3;"></span><span style="font-family: 'Lilita One', cursive; color: #D7263D;">₱250</span></div>
+          <div style="display: flex; align-items: baseline; gap: 8px;"><span style="background: #FFC72C; border: 2.5px solid #2B1A12; border-radius: 6px; padding: 0 8px; font-size: .85em;">ADD-ON</span><span>Extra Chashu</span><span style="flex: 1; border-bottom: 3px dotted #C9B8A3;"></span><span style="font-family: 'Lilita One', cursive; color: #D7263D;">₱70</span></div>
+        </div>
+      </div>
+
+      <div data-reveal-stagger="1" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: clamp(20px, 3vw, 32px);">
+        <!-- Rice bowls -->
+        <div class="menu-card" style="padding: clamp(20px, 3.5vw, 32px);">
+          <h3 style="margin: 0; font-family: 'Lilita One', cursive; font-weight: 400; font-size: clamp(24px, 3vw, 30px); color: #D7263D;">RICE BOWLS</h3>
+          <div style="font-weight: 800; font-size: 13px; letter-spacing: 2px; color: #4A362B; margin: 4px 0 18px;">SAVORY <span style="color: #D7263D;">|</span> STEAMY <span style="color: #D7263D;">|</span> LOADED</div>
+          <div style="display: flex; flex-direction: column; gap: 12px; font-size: clamp(16px, 1.8vw, 18px); font-weight: 700;">
+            <div style="display: flex; align-items: baseline; gap: 8px;"><span>Gyoza Rice</span><span style="flex: 1; border-bottom: 3px dotted #C9B8A3;"></span><span style="font-family: 'Lilita One', cursive; color: #D7263D;">₱120</span></div>
+            <div style="display: flex; align-items: baseline; gap: 8px;"><span>Karaage Rice</span><span style="flex: 1; border-bottom: 3px dotted #C9B8A3;"></span><span style="font-family: 'Lilita One', cursive; color: #D7263D;">₱140</span></div>
+            <div style="display: flex; align-items: baseline; gap: 8px;"><span>Chicken Katsu Rice</span><span style="flex: 1; border-bottom: 3px dotted #C9B8A3;"></span><span style="font-family: 'Lilita One', cursive; color: #D7263D;">₱140</span></div>
+            <div style="display: flex; align-items: baseline; gap: 8px;"><span>Chashu Rice</span><span style="flex: 1; border-bottom: 3px dotted #C9B8A3;"></span><span style="font-family: 'Lilita One', cursive; color: #D7263D;">₱150</span></div>
+          </div>
+        </div>
+        <!-- Bingsu -->
+        <div class="menu-card" style="padding: clamp(20px, 3.5vw, 32px);">
+          <h3 style="margin: 0; font-family: 'Lilita One', cursive; font-weight: 400; font-size: clamp(24px, 3vw, 30px); color: #D7263D;">BINGSU / HALO-HALO</h3>
+          <div style="font-weight: 800; font-size: 13px; letter-spacing: 2px; color: #4A362B; margin: 4px 0 18px;">THE TASTE OF SNOW IN SUMMER</div>
+          <div style="display: flex; flex-direction: column; gap: 12px; font-size: clamp(16px, 1.8vw, 18px); font-weight: 700;">
+            <div style="display: flex; align-items: baseline; gap: 8px;"><span>Snow Halo</span><span style="flex: 1; border-bottom: 3px dotted #C9B8A3;"></span><span style="font-family: 'Lilita One', cursive; color: #D7263D;">₱130</span></div>
+            <div style="display: flex; align-items: baseline; gap: 8px;"><span>Choco Oreo</span><span style="flex: 1; border-bottom: 3px dotted #C9B8A3;"></span><span style="font-family: 'Lilita One', cursive; color: #D7263D;">₱120</span></div>
+            <div style="display: flex; align-items: baseline; gap: 8px;"><span>Mango Cheesecake</span><span style="flex: 1; border-bottom: 3px dotted #C9B8A3;"></span><span style="font-family: 'Lilita One', cursive; color: #D7263D;">₱130</span></div>
+            <div style="display: flex; align-items: baseline; gap: 8px;"><span>Cheesecake Snow Halo</span><span style="flex: 1; border-bottom: 3px dotted #C9B8A3;"></span><span style="font-family: 'Lilita One', cursive; color: #D7263D;">₱150</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ STATS MARQUEE ============ -->
+  <div id="statsMarquee" aria-label="Bambam Diner quick facts">
+    <div class="marquee-track">
+      <div class="marquee-group">
+        <span class="stat-item"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.9 6.2 6.6.8-4.9 4.6 1.3 6.6L12 17l-5.9 3.2 1.3-6.6L2.5 9l6.6-.8z" fill="#FFC72C"/></svg><span><b>5-star</b> slurps from our regulars</span></span>
+        <span class="stat-item"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-8-5.3-8-11a4.6 4.6 0 0 1 8-3 4.6 4.6 0 0 1 8 3c0 5.7-8 11-8 11z" fill="#FF8B7E"/></svg><span><b>500+</b> die-hard fans on Facebook</span></span>
+        <span class="stat-item"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="#FFC72C"/><path d="M12 6v6l4 2.4" fill="none" stroke="#2B1A12" stroke-width="2.4" stroke-linecap="round"/></svg><span><b>13–15 hrs</b> broth, slow-boiled daily</span></span>
+        <span class="stat-item"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10h18c0 5-3.5 9-9 9s-9-4-9-9z" fill="#D7263D"/><ellipse cx="12" cy="10" rx="9" ry="2.4" fill="#F6D77B"/></svg><span><b>60+</b> bowls slurped every day</span></span>
+        <span class="stat-item"><svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="12" rx="10" ry="8" fill="#FFFDF3"/><ellipse cx="12" cy="12" rx="4.2" ry="3.4" fill="#F2932F"/></svg><span><b>5</b> ramen styles · ₱180–₱250</span></span>
+        <span class="stat-item"><svg viewBox="0 0 24 24" aria-hidden="true"><g stroke="#D9F0D3" stroke-width="2.2" stroke-linecap="round"><line x1="12" y1="3" x2="12" y2="21"/><line x1="4.2" y1="7.5" x2="19.8" y2="16.5"/><line x1="19.8" y1="7.5" x2="4.2" y2="16.5"/></g></svg><span><b>Bingsu</b> — shaved snow, piled high</span></span>
+        <span class="stat-item"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7z" fill="#D7263D"/><circle cx="12" cy="9" r="2.6" fill="#FFF7E9"/></svg><span><b>Proudly local</b> · National Highway, Brgy. Lapaz</span></span>
+      </div>
+      <div class="marquee-group" aria-hidden="true">
+        <span class="stat-item"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.9 6.2 6.6.8-4.9 4.6 1.3 6.6L12 17l-5.9 3.2 1.3-6.6L2.5 9l6.6-.8z" fill="#FFC72C"/></svg><span><b>5-star</b> slurps from our regulars</span></span>
+        <span class="stat-item"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-8-5.3-8-11a4.6 4.6 0 0 1 8-3 4.6 4.6 0 0 1 8 3c0 5.7-8 11-8 11z" fill="#FF8B7E"/></svg><span><b>500+</b> die-hard fans on Facebook</span></span>
+        <span class="stat-item"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="#FFC72C"/><path d="M12 6v6l4 2.4" fill="none" stroke="#2B1A12" stroke-width="2.4" stroke-linecap="round"/></svg><span><b>13–15 hrs</b> broth, slow-boiled daily</span></span>
+        <span class="stat-item"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10h18c0 5-3.5 9-9 9s-9-4-9-9z" fill="#D7263D"/><ellipse cx="12" cy="10" rx="9" ry="2.4" fill="#F6D77B"/></svg><span><b>60+</b> bowls slurped every day</span></span>
+        <span class="stat-item"><svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="12" rx="10" ry="8" fill="#FFFDF3"/><ellipse cx="12" cy="12" rx="4.2" ry="3.4" fill="#F2932F"/></svg><span><b>5</b> ramen styles · ₱180–₱250</span></span>
+        <span class="stat-item"><svg viewBox="0 0 24 24" aria-hidden="true"><g stroke="#D9F0D3" stroke-width="2.2" stroke-linecap="round"><line x1="12" y1="3" x2="12" y2="21"/><line x1="4.2" y1="7.5" x2="19.8" y2="16.5"/><line x1="19.8" y1="7.5" x2="4.2" y2="16.5"/></g></svg><span><b>Bingsu</b> — shaved snow, piled high</span></span>
+        <span class="stat-item"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7z" fill="#D7263D"/><circle cx="12" cy="9" r="2.6" fill="#FFF7E9"/></svg><span><b>Proudly local</b> · National Highway, Brgy. Lapaz</span></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ GALLERY ============ -->
+  <section id="gallery" style="position: relative; z-index: 2; background: linear-gradient(178deg, #FFF7E9 0%, #FFEFE8 100%); padding: clamp(84px, 11vw, 150px) clamp(16px, 4vw, 40px);">
+    <div id="fl5" aria-hidden="true" style="position: absolute; top: 56px; right: 5%; z-index: -1; opacity: .5; transform: rotate(-8deg); pointer-events: none;">
+      <div style="animation: bbFloat 5.9s ease-in-out infinite .9s;">
+        <svg viewBox="0 0 48 48" style="width: 40px; height: 40px; display: block;"><circle cx="24" cy="24" r="17" fill="#D9F0D3" stroke="#4E9C46" stroke-width="5"></circle><circle cx="24" cy="24" r="7" fill="none" stroke="#4E9C46" stroke-width="3"></circle></svg>
+      </div>
+    </div>
+    <div style="max-width: 1080px; margin: 0 auto; display: flex; flex-direction: column; gap: clamp(32px, 4vw, 52px);">
+      <div data-reveal="1" style="text-align: center;">
+        <div style="font-weight: 800; letter-spacing: 4px; font-size: 13px; color: #C8321F; text-transform: uppercase;">Fresh from the pot</div>
+        <h2 style="margin: 8px 0 0; font-family: 'Lilita One', cursive; font-weight: 400; font-size: clamp(34px, 5vw, 54px);">Come <span style="background: linear-gradient(transparent 55%, #FFC72C 55%);">hungry.</span></h2>
+        <div style="display: flex; justify-content: center; align-items: center; gap: 6px; margin-top: 14px;"><span style="width: 42px; height: 6px; border-radius: 999px; background: #D7263D;"></span><span style="width: 12px; height: 6px; border-radius: 999px; background: #FFC72C;"></span></div>
+      </div>
+      <div id="galleryGrid" data-reveal-stagger="1" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 18px;">
+        <div data-zoom-tile="1" style="position: relative; border: 4px solid #2B1A12; border-radius: 18px; overflow: hidden; height: 250px; transform: rotate(-1deg); box-shadow: 5px 5px 0 #2B1A12;">
+          <div style="position: absolute; inset: 0; transform: scale(calc(1 + var(--z, 0) * 0.04)); transition: transform .55s cubic-bezier(.22, .61, .36, 1);"><img src="https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&w=600&q=70" alt="Tonkotsu ramen close-up with jammy egg" loading="lazy" style="width: 100%; height: 100%; object-fit: cover; display: block;"></div>
+          <div style="position: absolute; left: 10px; right: 10px; bottom: 10px; opacity: var(--z, 0); transition: opacity .35s ease; background: rgba(43, 26, 18, .88); color: #FFF7E9; border-radius: 10px; padding: 6px 12px; font-weight: 700; font-size: 13px; text-align: center; pointer-events: none;">Tonkotsu close-up</div>
+        </div>
+        <div data-zoom-tile="1" style="position: relative; border: 4px solid #2B1A12; border-radius: 18px; overflow: hidden; height: 250px; transform: rotate(1deg); box-shadow: 5px 5px 0 #D7263D;">
+          <div style="position: absolute; inset: 0; transform: scale(calc(1 + var(--z, 0) * 0.04)); transition: transform .55s cubic-bezier(.22, .61, .36, 1);"><img src="https://images.unsplash.com/photo-1493780474015-ba834fd0ce2f?auto=format&fit=crop&w=600&q=70" alt="Lantern-lined street outside the diner" loading="lazy" style="width: 100%; height: 100%; object-fit: cover; display: block;"></div>
+          <div style="position: absolute; left: 10px; right: 10px; bottom: 10px; opacity: var(--z, 0); transition: opacity .35s ease; background: rgba(43, 26, 18, .88); color: #FFF7E9; border-radius: 10px; padding: 6px 12px; font-weight: 700; font-size: 13px; text-align: center; pointer-events: none;">Under the lanterns</div>
+        </div>
+        <div style="border: 4px solid #2B1A12; border-radius: 18px; height: 250px; transform: rotate(0.9deg); box-shadow: 5px 5px 0 #FFC72C; background: repeating-linear-gradient(90deg, #E03A2F 0 18px, #C92E24 18px 24px); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;">
+          <span style="font-weight: 800; font-size: 60px; line-height: 1; color: #FFC72C; text-shadow: 3px 3px 0 rgba(43, 26, 18, .4);">拉面</span>
+          <span style="font-family: 'Lilita One', cursive; letter-spacing: 3px; color: #FFF7E9; font-size: 14px;">FRESH DAILY</span>
+        </div>
+        <div data-zoom-tile="1" style="position: relative; border: 4px solid #2B1A12; border-radius: 18px; overflow: hidden; height: 250px; transform: rotate(-0.6deg); box-shadow: 5px 5px 0 #FFC72C;">
+          <div style="position: absolute; inset: 0; transform: scale(calc(1 + var(--z, 0) * 0.04)); transition: transform .55s cubic-bezier(.22, .61, .36, 1);"><img src="https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&w=600&q=70" alt="Choco Oreo bingsu tower" loading="lazy" style="width: 100%; height: 100%; object-fit: cover; display: block;"></div>
+          <div style="position: absolute; left: 10px; right: 10px; bottom: 10px; opacity: var(--z, 0); transition: opacity .35s ease; background: rgba(43, 26, 18, .88); color: #FFF7E9; border-radius: 10px; padding: 6px 12px; font-weight: 700; font-size: 13px; text-align: center; pointer-events: none;">Bingsu tower</div>
+        </div>
+        <div data-zoom-tile="1" style="position: relative; border: 4px solid #2B1A12; border-radius: 18px; overflow: hidden; height: 250px; transform: rotate(0.8deg); box-shadow: 5px 5px 0 #2B1A12;">
+          <div style="position: absolute; inset: 0; transform: scale(calc(1 + var(--z, 0) * 0.04)); transition: transform .55s cubic-bezier(.22, .61, .36, 1);"><img src="https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?auto=format&fit=crop&w=600&q=70" alt="Karaage rice bowl" loading="lazy" style="width: 100%; height: 100%; object-fit: cover; display: block;"></div>
+          <div style="position: absolute; left: 10px; right: 10px; bottom: 10px; opacity: var(--z, 0); transition: opacity .35s ease; background: rgba(43, 26, 18, .88); color: #FFF7E9; border-radius: 10px; padding: 6px 12px; font-weight: 700; font-size: 13px; text-align: center; pointer-events: none;">Karaage rice bowl</div>
+        </div>
+        <div style="border: 4px solid #2B1A12; border-radius: 18px; height: 250px; transform: rotate(-0.8deg); box-shadow: 5px 5px 0 #D7263D; background: #FFC72C; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;">
+          <svg viewBox="0 0 60 48" style="width: 84px; display: block;"><ellipse cx="30" cy="24" rx="25" ry="18" fill="#FFFDF3" stroke="#2B1A12" stroke-width="5"></ellipse><ellipse cx="30" cy="24" rx="10" ry="7.5" fill="#F2932F" stroke="#D97614" stroke-width="3"></ellipse></svg>
+          <span style="font-family: 'Lilita One', cursive; letter-spacing: 3px; color: #2B1A12; font-size: 14px;">JAMMY EGGS</span>
+        </div>
+        <div data-zoom-tile="1" style="position: relative; border: 4px solid #2B1A12; border-radius: 18px; overflow: hidden; height: 250px; transform: rotate(-1.1deg); box-shadow: 5px 5px 0 #D7263D;">
+          <div style="position: absolute; inset: 0; transform: scale(calc(1 + var(--z, 0) * 0.04)); transition: transform .55s cubic-bezier(.22, .61, .36, 1);"><img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=600&q=70" alt="Chef plating a dish in the kitchen" loading="lazy" style="width: 100%; height: 100%; object-fit: cover; display: block;"></div>
+          <div style="position: absolute; left: 10px; right: 10px; bottom: 10px; opacity: var(--z, 0); transition: opacity .35s ease; background: rgba(43, 26, 18, .88); color: #FFF7E9; border-radius: 10px; padding: 6px 12px; font-weight: 700; font-size: 13px; text-align: center; pointer-events: none;">Kitchen in action</div>
+        </div>
+        <div data-zoom-tile="1" style="position: relative; border: 4px solid #2B1A12; border-radius: 18px; overflow: hidden; height: 250px; transform: rotate(0.7deg); box-shadow: 5px 5px 0 #2B1A12;">
+          <div style="position: absolute; inset: 0; transform: scale(calc(1 + var(--z, 0) * 0.04)); transition: transform .55s cubic-bezier(.22, .61, .36, 1);"><img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=600&q=70" alt="Group of happy friends together" loading="lazy" style="width: 100%; height: 100%; object-fit: cover; display: block;"></div>
+          <div style="position: absolute; left: 10px; right: 10px; bottom: 10px; opacity: var(--z, 0); transition: opacity .35s ease; background: rgba(43, 26, 18, .88); color: #FFF7E9; border-radius: 10px; padding: 6px 12px; font-weight: 700; font-size: 13px; text-align: center; pointer-events: none;">Happy customers</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ REVIEWS ============ -->
+  <section style="position: relative; z-index: 2; background: linear-gradient(178deg, #FFEFE8 0%, #FFF7E9 72%); padding: 0 clamp(16px, 4vw, 40px) clamp(84px, 11vw, 150px);">
+    <div id="fl6" aria-hidden="true" style="position: absolute; top: 30%; left: 2%; z-index: -1; opacity: .55; transform: rotate(-16deg); pointer-events: none;">
+      <div style="animation: bbFloat 6.5s ease-in-out infinite;">
+        <svg viewBox="0 0 60 48" style="width: 48px; height: 38px; display: block;"><ellipse cx="30" cy="24" rx="25" ry="18" fill="#FFFDF3" stroke="#2B1A12" stroke-width="5"></ellipse><ellipse cx="30" cy="24" rx="10" ry="7.5" fill="#F2932F" stroke="#D97614" stroke-width="3"></ellipse></svg>
+      </div>
+    </div>
+    <div id="fl7" aria-hidden="true" style="position: absolute; bottom: 48px; right: 3%; z-index: -1; opacity: .55; transform: rotate(24deg); pointer-events: none;">
+      <div style="animation: bbFloat 7.1s ease-in-out infinite 1.4s;">
+        <svg viewBox="0 0 64 40" style="width: 52px; height: 33px; display: block;"><rect x="12" y="12" width="46" height="17" rx="8.5" fill="#D7263D" stroke="#2B1A12" stroke-width="4"></rect><rect x="4" y="14" width="14" height="12" rx="5" fill="#4E9C46" stroke="#2B1A12" stroke-width="4"></rect></svg>
+      </div>
+    </div>
+    <div style="max-width: 1080px; margin: 0 auto; display: flex; flex-direction: column; gap: clamp(32px, 4vw, 52px);">
+      <div data-reveal="1" style="text-align: center;">
+        <div style="font-weight: 800; letter-spacing: 4px; font-size: 13px; color: #C8321F; text-transform: uppercase;">Word on the highway</div>
+        <h2 style="margin: 8px 0 0; font-family: 'Lilita One', cursive; font-weight: 400; font-size: clamp(34px, 5vw, 54px);">Slurped &amp; <span style="background: linear-gradient(transparent 55%, #FFC72C 55%);">approved.</span></h2>
+        <div style="display: flex; justify-content: center; align-items: center; gap: 6px; margin-top: 14px;"><span style="width: 42px; height: 6px; border-radius: 999px; background: #D7263D;"></span><span style="width: 12px; height: 6px; border-radius: 999px; background: #FFC72C;"></span></div>
+      </div>
+      <div data-reveal-stagger="1" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px;">
+        <div class="review-card" style="--rot: -0.7deg; --shcol: #2B1A12;">
+          <div style="color: #F5B301; font-size: 18px; letter-spacing: 3px;">★★★★★</div>
+          <p style="margin: 0; font-size: 16px; line-height: 1.55; color: #4A362B; font-weight: 600;">"The broth is no joke — you can really taste the 13 hours. Best tantanmen in Zambales, hands down."</p>
+          <div style="display: flex; align-items: center; gap: 10px; margin-top: auto;">
+            <span style="width: 36px; height: 36px; border-radius: 50%; background: #D7263D; border: 3px solid #2B1A12; color: #FFF7E9; font-family: 'Lilita One', cursive; display: inline-flex; align-items: center; justify-content: center;">K</span>
+            <span style="font-weight: 800;">Kristine M.</span>
+          </div>
+        </div>
+        <div class="review-card" style="--rot: 0.6deg; --shcol: #FFC72C;">
+          <div style="color: #F5B301; font-size: 18px; letter-spacing: 3px;">★★★★★</div>
+          <p style="margin: 0; font-size: 16px; line-height: 1.55; color: #4A362B; font-weight: 600;">"Sulit na sulit! ₱200 for ramen this good is a steal. The chashu melts talaga."</p>
+          <div style="display: flex; align-items: center; gap: 10px; margin-top: auto;">
+            <span style="width: 36px; height: 36px; border-radius: 50%; background: #FFC72C; border: 3px solid #2B1A12; color: #2B1A12; font-family: 'Lilita One', cursive; display: inline-flex; align-items: center; justify-content: center;">J</span>
+            <span style="font-weight: 800;">Jaypee R.</span>
+          </div>
+        </div>
+        <div class="review-card" style="--rot: -0.5deg; --shcol: #D7263D;">
+          <div style="color: #F5B301; font-size: 18px; letter-spacing: 3px;">★★★★★</div>
+          <p style="margin: 0; font-size: 16px; line-height: 1.55; color: #4A362B; font-weight: 600;">"We came for the ramen, stayed for the bingsu. The kids demolished the Choco Oreo."</p>
+          <div style="display: flex; align-items: center; gap: 10px; margin-top: auto;">
+            <span style="width: 36px; height: 36px; border-radius: 50%; background: #2E4A38; border: 3px solid #2B1A12; color: #FFF7E9; font-family: 'Lilita One', cursive; display: inline-flex; align-items: center; justify-content: center;">A</span>
+            <span style="font-weight: 800;">Ana Lorraine S.</span>
+          </div>
+        </div>
+        <div class="review-card" style="--rot: 0.8deg; --shcol: #2B1A12;">
+          <div style="color: #F5B301; font-size: 18px; letter-spacing: 3px;">★★★★★</div>
+          <p style="margin: 0; font-size: 16px; line-height: 1.55; color: #4A362B; font-weight: 600;">"Feels like a little corner of Japan along the National Highway. Super friendly staff too."</p>
+          <div style="display: flex; align-items: center; gap: 10px; margin-top: auto;">
+            <span style="width: 36px; height: 36px; border-radius: 50%; background: #D7263D; border: 3px solid #2B1A12; color: #FFF7E9; font-family: 'Lilita One', cursive; display: inline-flex; align-items: center; justify-content: center;">M</span>
+            <span style="font-weight: 800;">Marco D.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ VISIT ============ -->
+  <section id="visit" style="position: relative; z-index: 2; background: linear-gradient(168deg, #2B1A12 0%, #241409 55%, #1C0F09 100%); color: #FFF7E9; padding: clamp(84px, 11vw, 150px) clamp(16px, 4vw, 40px);">
+    <div id="fl8" aria-hidden="true" style="position: absolute; top: 60px; right: 6%; z-index: -1; opacity: .3; transform: rotate(12deg); pointer-events: none;">
+      <div style="animation: bbFloat 7.8s ease-in-out infinite .5s;">
+        <svg viewBox="0 0 48 56" style="width: 42px; height: 49px; display: block;"><rect x="6" y="5" width="36" height="46" rx="6" fill="#4C7A57" stroke="#1C0F09" stroke-width="5"></rect><rect x="15" y="14" width="18" height="28" rx="4" fill="none" stroke="#8FBC93" stroke-width="3.5"></rect></svg>
+      </div>
+    </div>
+    <div style="max-width: 1080px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: clamp(28px, 4vw, 56px); align-items: start;">
+      <div data-reveal-stagger="1" style="display: flex; flex-direction: column; gap: 20px;">
+        <div style="font-weight: 800; letter-spacing: 4px; font-size: 13px; color: #FFC72C; text-transform: uppercase;">Tara, kain! · Visit us</div>
+        <h2 style="margin: 0; font-family: 'Lilita One', cursive; font-weight: 400; font-size: clamp(34px, 5vw, 54px); color: #FFC72C; text-shadow: 3px 4px 0 #D7263D;">FIND THE LANTERNS</h2>
+        <div style="display: flex; align-items: center; gap: 6px;"><span style="width: 42px; height: 6px; border-radius: 999px; background: #FFC72C;"></span><span style="width: 12px; height: 6px; border-radius: 999px; background: #D7263D;"></span></div>
+        <p style="margin: 0; font-size: 17px; line-height: 1.6; color: #E8D9C4; max-width: 44ch;">National Highway, Brgy. Lapaz,<br>San Marcelino, Zambales, Philippines</p>
+        <div style="border: 3px solid #FFC72C; border-radius: 16px; padding: 16px 20px; display: flex; flex-direction: column; gap: 8px; font-weight: 700; font-size: 16px; max-width: 380px;">
+          <div style="display: flex; justify-content: space-between; gap: 16px;"><span>Monday</span><span style="color: #FF8B7E;">Closed</span></div>
+          <div style="display: flex; justify-content: space-between; gap: 16px;"><span>Tuesday – Sunday</span><span style="color: #FFC72C;">12:00 PM – 9:00 PM</span></div>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 12px;">
+          <a class="btn-visit-yellow" href="tel:+639544073640">0954 407 3640</a>
+          <a class="btn-visit-ghost" href="https://www.facebook.com/search/top?q=bambam%20diner" target="_blank" rel="noopener">Facebook ↗</a>
+        </div>
+      </div>
+      <div data-reveal="1" style="display: flex; flex-direction: column; gap: 12px;">
+        <div style="border: 4px solid #FFC72C; border-radius: 20px; overflow: hidden; height: clamp(260px, 34vw, 360px); background: #FFF7E9;">
+          <iframe title="Map — Bambam Diner, National Highway, Brgy. Lapaz, San Marcelino, Zambales" src="https://www.google.com/maps?q=Bambam+Diner+National+Highway+Lapaz+San+Marcelino+Zambales&output=embed" style="width: 100%; height: 100%; border: 0; display: block;" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+        </div>
+        <a class="maps-link" href="https://www.google.com/maps/search/?api=1&query=Bambam+Diner+National+Highway+Lapaz+San+Marcelino+Zambales" target="_blank" rel="noopener">Open in Google Maps →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FOOTER ============ -->
+  <footer style="position: relative; z-index: 2; background: #1C0F09; color: #C7B39C; padding: 28px clamp(16px, 4vw, 40px);">
+    <div style="max-width: 1080px; margin: 0 auto; display: flex; flex-wrap: wrap; align-items: center; gap: 14px 28px; font-size: 14px; font-weight: 600;">
+      <span style="font-family: 'Gameria', 'Lilita One', cursive; font-size: 18px; color: #FFC72C;">BAM BAM <span style="font-size: 12px; letter-spacing: 2px; color: #C7B39C; font-family: 'Lilita One', cursive;">DINER</span></span>
+      <span style="flex: 1;"></span>
+      <a class="footer-link" href="https://www.facebook.com/search/top?q=bambam%20diner" target="_blank" rel="noopener">Facebook</a>
+      <a class="footer-link" href="tel:+639544073640" style="text-decoration: none;">0954 407 3640</a>
+      <span>© 2026 Bambam Diner · San Marcelino, Zambales</span>
+    </div>
+  </footer>
+</div>
+
+<!-- ============ FLOATING MUSIC PLAYER ============ -->
+<div id="bbPlayer" aria-label="Background music player">
+  <button id="bbpMini" class="bbp-mini" type="button" aria-label="Expand music player">
+    <span class="bbp-mini-eq" aria-hidden="true"><span></span><span></span><span></span></span>
+    <span id="bbpMiniTitle" class="bbp-mini-title">&nbsp;</span>
+  </button>
+  <div id="bbpPop" hidden>
+    <div class="bbp-controls">
+      <button id="bbpShuffle" class="bbp-chip" type="button" aria-pressed="false" aria-label="Shuffle off" title="Shuffle">
+        <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"/><path d="M4 20 21 3"/><path d="M21 16v5h-5"/><path d="m15 15 6 6"/><path d="m4 4 5 5"/></svg>
+      </button>
+      <button id="bbpRepeat" class="bbp-chip" type="button" aria-label="Repeat: off" title="Repeat">
+        <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m17 1 4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="m7 23-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+        <span id="bbpRepeatBadge" class="bbp-badge" aria-hidden="true">1</span>
+      </button>
+      <button id="bbpMute" class="bbp-chip" type="button" aria-pressed="false" aria-label="Mute" title="Mute / unmute">
+        <svg id="bbpMuteOn" viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4V5z" fill="currentColor" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.6 5.4a9.4 9.4 0 0 1 0 13.2" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+        <svg id="bbpMuteOff" viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4V5z" fill="currentColor" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="m16 9 6 6M22 9l-6 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
+      </button>
+      <input id="bbpVol" type="range" min="0" max="100" step="1" value="70" aria-label="Volume">
+    </div>
+    <ol id="bbpList" class="bbp-list"></ol>
+  </div>
+  <div class="bbp-pill">
+    <canvas id="bbpWave" width="52" height="26" aria-hidden="true"></canvas>
+    <div class="bbp-meta" aria-live="polite">
+      <div id="bbpTitle" class="bbp-title">&nbsp;</div>
+      <div id="bbpSub" class="bbp-sub">&nbsp;</div>
+    </div>
+    <button id="bbpPrev" class="bbp-btn" type="button" aria-label="Previous track" title="Previous">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 5v14L9 12l10-7z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M6 5v14" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/></svg>
+    </button>
+    <button id="bbpPlay" class="bbp-btn bbp-play" type="button" aria-label="Play" title="Play / pause">
+      <svg id="bbpPlayIco" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.5 4.8v14.4L20.5 12 8.5 4.8z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+      <svg id="bbpPauseIco" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13M16 5.5v13" fill="none" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/></svg>
+    </button>
+    <button id="bbpNext" class="bbp-btn" type="button" aria-label="Next track" title="Next">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5v14l10-7L5 5z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M18 5v14" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/></svg>
+    </button>
+    <button id="bbpMore" class="bbp-btn bbp-more" type="button" aria-expanded="false" aria-controls="bbpPop" aria-label="More music controls" title="More controls">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 14.5 12 8.5l6 6" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <button id="bbpFold" class="bbp-btn bbp-fold" type="button" aria-label="Collapse player" title="Collapse">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9.5l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+  </div>
+</div>
+
+<!-- three.min.js + hero3d.js are injected dynamically by main.js (CDN with
+     local vendor/ fallback) so the 589KB 3D stack never blocks first paint,
+     DOMContentLoaded, the loader reveal, or the music player. -->
+<script src="js/player.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
