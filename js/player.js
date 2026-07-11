@@ -132,6 +132,11 @@
     // delivers pagehide (killed tab, crash) — the unload save alone was a
     // single point of failure.
     audio.addEventListener('timeupdate', function () {
+      // Only while actually playing: a paused element still fires timeupdate
+      // during the restore seek, and that write clobbered the navigated-in
+      // "playing at 3.4s" snapshot with "paused at 0" — killing cross-page
+      // resume for every hop after the first.
+      if (audio.paused) return;
       var now = Date.now();
       if (now - lastSave > 2000) { lastSave = now; saveState(); }
     });
@@ -209,18 +214,51 @@
       };
       if (audio.readyState >= 1) seek();
       else audio.addEventListener('loadedmetadata', seek, { once: true });
+      // The metadata-time seek can clamp to 0 when the seekable range isn't
+      // established yet (range-less servers, iOS metadata quirks) — re-land
+      // it once the element is actually ready to play.
+      audio.addEventListener('canplay', function () {
+        if (Math.abs(audio.currentTime - saved.time) > 0.75) seek();
+      }, { once: true });
     }
     if (saved.playing && !gesturePlaying) {
       // Every page load is a fresh autoplay context (Safari especially), even
-      // though the visitor interacted on the previous page. If the resume is
-      // blocked, that's the accepted fallback: stay paused with the right
-      // track + timestamp loaded, so one tap on play continues from there.
+      // though the visitor interacted on the previous page. Desktop engagement
+      // heuristics usually allow the resume; iOS WebKit always rejects it —
+      // there, resume on the first tap anywhere instead (armTapResume).
       var p = audio.play();
-      if (p && p.then) p.then(markMusicOn, updateUI);
+      if (p && p.then) p.then(markMusicOn, armTapResume);
       else markMusicOn();
     } else if (saved.playing && gesturePlaying) {
       markMusicOn();
     }
+  }
+
+  // Cross-page resume was autoplay-blocked (iOS WebKit: a navigation clears
+  // user activation and there's no engagement heuristic). play() run
+  // synchronously inside the page's FIRST tap/click succeeds, wherever the
+  // tap lands. A touchend that ends a scroll gets no activation credit and
+  // play() rejects again — stay armed until a real tap works. Taps on the
+  // player are left to its own controls (resuming here would race the play
+  // button's toggle into an instant pause); once anything starts playback,
+  // the next gesture just disarms.
+  function armTapResume() {
+    updateUI();
+    var opts = { capture: true, passive: true };
+    function disarm() {
+      document.removeEventListener('touchend', resume, opts);
+      document.removeEventListener('click', resume, opts);
+    }
+    function resume(e) {
+      if (e.target && e.target.closest && e.target.closest('#bbPlayer')) return;
+      if (!audio.paused) { disarm(); return; }
+      var p = audio.play();
+      if (p && p.then) p.then(function () { disarm(); markMusicOn(); },
+        function () { /* not a credited gesture (scroll-end) — stay armed */ });
+      else { disarm(); markMusicOn(); }
+    }
+    document.addEventListener('touchend', resume, opts);
+    document.addEventListener('click', resume, opts);
   }
 
   // Resume succeeded: reflect it on the index loader's music button so the
