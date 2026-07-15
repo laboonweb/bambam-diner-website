@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Bambam Diner — Ramen House · San Marcelino, Zambales</title>
   <meta name="description" content="Bambam Diner — rich, bold, authentic ramen slow-boiled 13–15 hours, plus Korean bingsu. National Highway, Brgy. Lapaz, San Marcelino, Zambales.">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍜</text></svg>">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><ellipse cx=%2250%22 cy=%2240%22 rx=%2242%22 ry=%2210%22 fill=%22%23FFC72C%22 stroke=%22%232B1A12%22 stroke-width=%225%22/><path d=%22M11 40 L21 78 Q50 92 79 78 L89 40%22 fill=%22%23D7263D%22 stroke=%22%232B1A12%22 stroke-width=%225%22 stroke-linejoin=%22round%22/><path d=%22M25 38 q12 -10 25 0 t25 0%22 fill=%22none%22 stroke=%22%23FFF7E9%22 stroke-width=%226%22 stroke-linecap=%22round%22/></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://cdn.jsdelivr.net">
@@ -50,11 +50,14 @@
     .bbl-dots span { width: 13px; height: 13px; border-radius: 50%; border: 2.5px solid #2B1A12; animation: bblBob 1s ease-in-out infinite; }
     .bbl-dots span:nth-child(1) { background: #D7263D; }
     .bbl-dots span:nth-child(2) { background: #FFC72C; animation-delay: .15s; }
-    .bbl-dots span:nth-child(3) { background: #4E9C46; animation-delay: .3s; }
+    .bbl-dots span:nth-child(3) { background: #D7263D; animation-delay: .3s; }
     @keyframes bblBob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-9px); } }
-    .bbl-music { margin-top: 14px; font-family: inherit; font-size: 15px; letter-spacing: .5px; color: #2B1A12; background: #FFFDF6; border: 3px solid #2B1A12; border-radius: 999px; padding: 9px 20px; box-shadow: 3px 3px 0 #2B1A12; cursor: pointer; transition: transform .12s ease, box-shadow .12s ease, background .2s ease; }
+    .bbl-music { margin-top: 14px; font-family: inherit; font-size: 15px; letter-spacing: .5px; color: #2B1A12; background: #FFFDF6; border: 3px solid #2B1A12; border-radius: 999px; padding: 9px 20px; box-shadow: 3px 3px 0 #2B1A12; cursor: pointer; transition: transform .12s ease, box-shadow .12s ease, background .2s ease; display: inline-flex; align-items: center; gap: 8px; }
     .bbl-music:hover { transform: translate(1px, 1px); box-shadow: 2px 2px 0 #2B1A12; }
     .bbl-music.on { background: #FFC72C; cursor: default; }
+    .bbl-music-ico-on { display: none; }
+    .bbl-music.on .bbl-music-ico-off { display: none; }
+    .bbl-music.on .bbl-music-ico-on { display: inline-flex; }
   </style>
 </head>
 <body>
@@ -66,7 +69,11 @@
     <div class="bbl-logo" aria-hidden="true">BAM BAM</div>
     <div class="bbl-badge" aria-hidden="true">DINER</div>
     <div class="bbl-dots" aria-hidden="true"><span></span><span></span><span></span></div>
-    <button id="bbLoaderMusic" class="bbl-music" type="button">🔊 Click to enable music</button>
+    <button id="bbLoaderMusic" class="bbl-music" type="button">
+      <svg class="bbl-music-ico bbl-music-ico-off" viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4V5z" fill="#2B1A12" stroke="#2B1A12" stroke-width="1.8" stroke-linejoin="round"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.6 5.4a9.4 9.4 0 0 1 0 13.2" fill="none" stroke="#2B1A12" stroke-width="2.2" stroke-linecap="round"/></svg>
+      <svg class="bbl-music-ico bbl-music-ico-on" viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M9 17.5V6l8-2v11.5" fill="none" stroke="#2B1A12" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="6.5" cy="17.5" r="2.6" fill="#D7263D" stroke="#2B1A12" stroke-width="1.4"/><circle cx="14.5" cy="15.5" r="2.6" fill="#FFC72C" stroke="#2B1A12" stroke-width="1.4"/></svg>
+      <span id="bbLoaderMusicText">Click to enable music</span>
+    </button>
   </div>
 </div>
 <noscript><style>#bbLoader { display: none !important; }</style></noscript>
@@ -156,7 +163,8 @@
     var p = music.audio.play();
     if (p && p.catch) p.catch(function () {});
     mbtn.classList.add('on');
-    mbtn.textContent = '🎵 Music on — enjoy!';
+    var mbtnText = document.getElementById('bbLoaderMusicText');
+    if (mbtnText) mbtnText.textContent = 'Music on — enjoy!';
     document.dispatchEvent(new Event('bb:musicwanted'));
   });
 })();

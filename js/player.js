@@ -266,7 +266,11 @@
   function markMusicOn() {
     m.wanted = true;
     var b = document.getElementById('bbLoaderMusic');
-    if (b) { b.classList.add('on'); b.textContent = '🎵 Music on — enjoy!'; }
+    if (b) {
+      b.classList.add('on');
+      var t = document.getElementById('bbLoaderMusicText');
+      if (t) t.textContent = 'Music on — enjoy!';
+    }
     updateUI();
   }
 
