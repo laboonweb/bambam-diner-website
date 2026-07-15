@@ -132,7 +132,7 @@ a:hover { color: #96200F; }
   border-radius: 14px; padding: 10px 20px;
   transition: background .2s ease;
 }
-.btn-visit-ghost:hover { background: #D7263D; color: #FFF7E9; }
+.btn-visit-ghost:hover, .btn-visit-ghost:active { background: #1877F2; color: #FFF7E9; }
 .maps-link { text-decoration: none; color: #FFC72C; font-weight: 800; font-size: 15px; align-self: flex-end; }
 .maps-link:hover { color: #FFDD70; }
 
