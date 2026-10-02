@@ -39,3 +39,13 @@ Then open `http://localhost:8000`.
 ## Project note
 
 This repository is a portfolio website build. Brand assets and business details belong to Bambam Diner; the project is shared here to showcase web design, frontend craft, animation, and progressive enhancement.
+
+## Usage
+
+This project is published publicly for portfolio and code-review purposes.
+
+© 2026 Briann Arcala / Arc Web Works. All rights reserved.
+
+The design, visual system, branding implementation, and source code may not
+be redistributed, resold, rebranded, or presented as original work without
+written permission.
